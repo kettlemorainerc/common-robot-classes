@@ -32,7 +32,7 @@ public class CardinalMovement extends CommandBase {
 //		north = Math.abs(north) >= Math.abs(east) ? north : 0;
 //		east = Math.abs(east) > Math.abs(north) ? east : 0;
 
-		chassis.setVelocity01(north, east);
+		chassis.setVelocityPercent(north, east);
 	}
 
 	@Override public void end(boolean interrupted) {}

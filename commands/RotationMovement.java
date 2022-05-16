@@ -16,7 +16,7 @@ public class RotationMovement extends CommandBase {
     }
 
     @Override public void execute() {
-        chassis.setRotation01(stick.getRotation());
+        chassis.setRotationPercent(stick.getRotation());
     }
 
     @Override

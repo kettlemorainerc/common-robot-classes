@@ -204,19 +204,19 @@ public abstract class AbstractChassis extends SubsystemBase implements DriveChas
     }
 
     @Override
-    public final void setVelocity01(double north, double east, double clockwise) {
+    public final void setVelocityPercent(double north, double east, double clockwise) {
         EnumMap<VelocityDirection, Double> max = getMaximumVelocity();
         setVelocity(north * max.get(NORTH), east * max.get(EAST), clockwise * max.get(ROTATION));
     }
 
     @Override
-    public final void setVelocity01(double north, double east) {
+    public final void setVelocityPercent(double north, double east) {
         EnumMap<VelocityDirection, Double> max = getMaximumVelocity();
         setVelocity(north * max.get(NORTH), east * max.get(EAST));
     }
 
     @Override
-    public final void setRotation01(double clockwise) {
+    public final void setRotationPercent(double clockwise) {
         setRotation(clockwise * getMaximumVelocity().get(ROTATION));
     }
 
