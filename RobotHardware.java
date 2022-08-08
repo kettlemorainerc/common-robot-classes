@@ -6,7 +6,7 @@ import org.usfirst.frc.team2077.common.drivetrain.*;
 import org.usfirst.frc.team2077.common.sensors.*;
 import org.usfirst.frc.team2077.common.subsystems.*;
 
-public interface RobotHardware<WheelDriveModule extends DriveModuleIF> {
+public interface RobotHardware<WheelDriveModule> {
     Subsystem getHeading();
     Subsystem getPosition();
     AbstractChassis getChassis();
