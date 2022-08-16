@@ -12,5 +12,5 @@ public interface RobotHardware<WheelDriveModule> {
     AbstractChassis getChassis();
     default AngleSensor getAngleSensor() {return null;}
     AHRS getNavX();
-    CANLineSubsystem<WheelDriveModule> getWheel(MecanumMath.WheelPosition position);
+    WheelDriveModule getWheel(MecanumMath.WheelPosition position);
 }
