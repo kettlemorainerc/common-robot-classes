@@ -17,7 +17,7 @@ Notes on units:
     DriveChassis motion units are defined to be inches or inches/second for chassis movement,
     and degrees or degrees/second for chassis rotation.
 
-    Exceptions are setVelocity01() and setRotation01() methods, which operate on values ranging
+    Exceptions are setVelocityPercent() and setRotationPercent() methods, which operate on values ranging
     from -1.0 to +1.0, which are internally mapped to the maximum negative and positive
     inches/second or degrees/second values possible for the chassis within WheelModule limits.
 
@@ -119,16 +119,16 @@ public interface DriveChassisIF extends Subsystem {
      * @param east Fraction of nominal maximum in range -1.0 to 1.0.
      * @param clockwise Fraction of nominal maximum in range -1.0 to 1.0.
      */
-    void setVelocity01(double north, double east, double clockwise);
+    void setVelocityPercent(double north, double east, double clockwise);
     /**
      * @param north Fraction of nominal maximum in range -1.0 to 1.0.
      * @param east Fraction of nominal maximum in range -1.0 to 1.0.
      */
-    void setVelocity01(double north, double east);
+    void setVelocityPercent(double north, double east);
     /**
      * @param clockwise Fraction of nominal maximum in range -1.0 to 1.0.
      */
-    void setRotation01(double clockwise);
+    void setRotationPercent(double clockwise);
 
     /**
      * Set velocity to zero immediately, ignoring any deceleration limits.
