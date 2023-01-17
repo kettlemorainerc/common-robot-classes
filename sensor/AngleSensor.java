@@ -1,4 +1,4 @@
-package org.usfirst.frc.team2077.common.sensors;
+package org.usfirst.frc.team2077.common.sensor;
 
 import java.util.Timer;
 import java.util.TimerTask;

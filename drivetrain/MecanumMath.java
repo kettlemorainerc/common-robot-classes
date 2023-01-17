@@ -1,5 +1,6 @@
 package org.usfirst.frc.team2077.common.drivetrain;
 
+import org.usfirst.frc.team2077.common.WheelPosition;
 import org.usfirst.frc.team2077.common.math.*;
 
 import java.util.*;
@@ -152,12 +153,6 @@ public final class MecanumMath {
 		}
 
 		return ret;
-	}
-	public enum WheelPosition {
-		NORTH_EAST,
-		SOUTH_EAST,
-		SOUTH_WEST,
-		NORTH_WEST,
 	}
 
 	public enum VelocityDirection {

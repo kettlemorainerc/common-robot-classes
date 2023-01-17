@@ -1,8 +1,9 @@
-package org.usfirst.frc.team2077.common.subsystems;
+package org.usfirst.frc.team2077.common.subsystem;
 
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.*;
 import edu.wpi.first.wpilibj2.command.*;
+import org.usfirst.frc.team2077.common.WheelPosition;
 import org.usfirst.frc.team2077.common.drivetrain.*;
 
 /**
@@ -44,7 +45,7 @@ public abstract class CANLineSubsystem<T> implements Subsystem {
             super(new SparkNeoDriveModule(position), position.ID);
         }
 
-        public SparkNeo(MecanumMath.WheelPosition position) {
+        public SparkNeo(WheelPosition position) {
             this(SparkNeoDriveModule.DrivePosition.forWheelPosition(position));
         }
 

@@ -6,6 +6,7 @@
 package org.usfirst.frc.team2077.common.drivetrain;
 
 import org.usfirst.frc.team2077.common.Clock;
+import org.usfirst.frc.team2077.common.WheelPosition;
 import org.usfirst.frc.team2077.common.drivetrain.MecanumMath.*;
 import org.usfirst.frc.team2077.common.math.*;
 
@@ -17,7 +18,7 @@ import java.util.function.*;
 
 import static org.usfirst.frc.team2077.common.drivetrain.MecanumMath.VelocityDirection.*;
 
-public abstract class AbstractChassis extends SubsystemBase implements DriveChassisIF {
+public abstract class AbstractChassis<DriveModule > extends SubsystemBase implements DriveChassisIF {
 
     private static <T> EnumMap<VelocityDirection, T> defaultedDirectionMap(T defaultValue) {
         EnumMap<VelocityDirection, T> newMap = new EnumMap<>(VelocityDirection.class);
@@ -25,7 +26,7 @@ public abstract class AbstractChassis extends SubsystemBase implements DriveChas
         return newMap;
     }
 
-    public final EnumMap<WheelPosition, DriveModuleIF> driveModule;
+    public final EnumMap<WheelPosition, DriveModule> driveModule;
     protected final double wheelbase;
     protected final double trackWidth;
     protected final double wheelRadius;
@@ -59,7 +60,7 @@ public abstract class AbstractChassis extends SubsystemBase implements DriveChas
 //    private long debugCounter_ = 0; // internal counter
 //    public boolean debug_ = false;
 
-    public AbstractChassis(EnumMap<WheelPosition, DriveModuleIF> driveModule, double wheelbase, double trackWidth, double wheelRadius, Supplier<Double> getSeconds) {
+    public AbstractChassis(EnumMap<WheelPosition, DriveModule> driveModule, double wheelbase, double trackWidth, double wheelRadius, Supplier<Double> getSeconds) {
         this.driveModule = driveModule;
         this.wheelbase = wheelbase;
         this.trackWidth = trackWidth;
@@ -67,7 +68,7 @@ public abstract class AbstractChassis extends SubsystemBase implements DriveChas
         this.getSeconds = getSeconds;
     }
 
-    public AbstractChassis(EnumMap<WheelPosition, DriveModuleIF> driveModule, double wheelbase, double trackWidth, double wheelRadius) {
+    public AbstractChassis(EnumMap<WheelPosition, DriveModule> driveModule, double wheelbase, double trackWidth, double wheelRadius) {
         this(driveModule, wheelbase, trackWidth, wheelRadius, Clock::getSeconds);
     }
 

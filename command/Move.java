@@ -3,7 +3,7 @@
 /* Open Source Software - may be modified and shared by FRC teams.            */
 /*----------------------------------------------------------------------------*/
 
-package org.usfirst.frc.team2077.common.commands;
+package org.usfirst.frc.team2077.common.command;
 
 import edu.wpi.first.wpilibj2.command.*;
 import org.usfirst.frc.team2077.common.*;
@@ -30,19 +30,19 @@ public class Move extends CommandBase {
 
 	private Position origin;
 
-	public Move(RobotHardware<?> hardware, double north, double east, double rotation) {
+	public Move(RobotHardware<?, ?> hardware, double north, double east, double rotation) {
 		this(hardware, north, east, rotation, 3, hardware.getPosition(), hardware.getHeading());
 	}
 
-	public Move(RobotHardware<?> hardware, double north, double east) {
+	public Move(RobotHardware<?, ?> hardware, double north, double east) {
 		this(hardware, north, east, 0, 2, hardware.getPosition());
 	}
 
-	public Move(RobotHardware<?> hardware, double rotation) {
+	public Move(RobotHardware<?, ?> hardware, double rotation) {
 		this(hardware, 0, 0, rotation, 1, hardware.getHeading());
 	}
 
-	private Move(RobotHardware<?> hardware, double north, double east, double rotation, int method, Subsystem... requirements) {
+	private Move(RobotHardware<?, ?> hardware, double north, double east, double rotation, int method, Subsystem... requirements) {
 		addRequirements(requirements);
 		this.chassis = hardware.getChassis();
 

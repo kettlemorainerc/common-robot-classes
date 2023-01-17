@@ -1,10 +1,10 @@
 /**
- * This team2077 common package ia a collection of a few different common classes that Team 2077 utilizes for a typical
+ * This team2077 common package ia a collection of different common classes that Team 2077 utilizes for a typical
  * robot. The idea/target of this repository is to be utilized as a git submodule and commited/updated within robot
  * repositories, then immediately updated.
  * <br><br>
  * The following command can be used to ensure that this module is up-to-date and to initially load it into a
- * repository utilizing it if you haven't already loaded it's submodules.<br>
+ * repository utilizing it if you haven't already loaded its submodules.<br>
  * <code>git submodule update --recursive --init</code>
  * <br>
  * When cloning a repository you can also use the <code>--recurse-submodules</code> flag to automatically initialize

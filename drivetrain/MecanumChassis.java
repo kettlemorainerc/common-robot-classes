@@ -8,7 +8,8 @@ package org.usfirst.frc.team2077.common.drivetrain;
 import org.usfirst.frc.team2077.common.*;
 import org.usfirst.frc.team2077.common.drivetrain.MecanumMath.*;
 import org.usfirst.frc.team2077.common.math.*;
-import org.usfirst.frc.team2077.common.sensors.*;
+import org.usfirst.frc.team2077.common.sensor.*;
+import org.usfirst.frc.team2077.common.subsystem.CANLineSubsystem;
 
 import java.util.AbstractMap.*;
 import java.util.*;
@@ -18,7 +19,7 @@ import java.util.function.*;
 import static java.util.stream.Collectors.*;
 import static org.usfirst.frc.team2077.common.drivetrain.MecanumMath.VelocityDirection.*;
 
-public class MecanumChassis extends AbstractChassis {
+public class MecanumChassis extends AbstractChassis<DriveModuleIF> {
 	private static final double WHEELBASE = 20.375; // inches
 	private static final double TRACK_WIDTH = 25.5; // inches
 	private static final double WHEEL_RADIUS = 4.0; // inches
@@ -27,17 +28,23 @@ public class MecanumChassis extends AbstractChassis {
 	private final MecanumMath mecanumMath;
 	private final AngleSensor angleSensor;
 
-	private static EnumMap<WheelPosition, DriveModuleIF> buildDriveModule(RobotHardware<? extends DriveModuleIF> hardware) {
+	private static EnumMap<WheelPosition, DriveModuleIF> buildDriveModule(RobotHardware<?, ?> hardware) {
 		EnumMap<WheelPosition, DriveModuleIF> driveModule = new EnumMap<>(WheelPosition.class);
 
 		for(WheelPosition pos : WheelPosition.values()) {
-			driveModule.put(pos, hardware.getWheel(pos).motor);
+			Object wheel = hardware.getWheel(pos);
+			if(wheel instanceof DriveModuleIF) driveModule.put(pos, (DriveModuleIF) wheel);
+			else if(wheel instanceof CANLineSubsystem) driveModule.put(pos, (DriveModuleIF) ((CANLineSubsystem<?>) wheel).motor);
+			else throw new RuntimeException(String.format(
+					"Unexpected wheel type %s. Neither DriveModuleIF nor CANLineSubsystem?",
+						wheel.getClass()
+				));
 		}
 
 		return driveModule;
 	}
 
-	public MecanumChassis(RobotHardware<? extends DriveModuleIF> hardware) {
+	public MecanumChassis(RobotHardware<?, MecanumChassis> hardware) {
 		this(hardware.getAngleSensor(), buildDriveModule(hardware), Clock::getSeconds);
 	}
 

@@ -5,7 +5,7 @@
 
 package org.usfirst.frc.team2077.common.drivetrain;
 
-import org.usfirst.frc.team2077.common.drivetrain.MecanumMath.*;
+import org.usfirst.frc.team2077.common.WheelPosition;
 
 /**
  * Wrapper for a single wheel/motor/controller/encoder assembly. The wrapper

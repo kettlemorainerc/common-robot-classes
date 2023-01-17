@@ -1,4 +1,4 @@
-package org.usfirst.frc.team2077.common.commands;
+package org.usfirst.frc.team2077.common.command;
 
 import edu.wpi.first.wpilibj2.command.*;
 import org.usfirst.frc.team2077.common.*;
