@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.usfirst.frc.team2077.common.math.AccelerationLimits.*;
 
 import java.util.EnumMap;
+import java.util.Map;
 import java.util.function.*;
 
 import static org.usfirst.frc.team2077.common.drivetrain.MecanumMath.VelocityDirection.*;
@@ -49,10 +50,10 @@ public abstract class AbstractChassis<DriveModule > extends SubsystemBase implem
     protected final Position positionSet = new Position(); // Continuously updated by integrating velocity setpoints (velocitySet_).
     protected final Position positionMeasured = new Position(); // Continuously updated by integrating measured velocities (velocityMeasured_).
 
-    protected EnumMap<VelocityDirection, Double> velocity = defaultedDirectionMap(0d); // target velocity for next period
-    protected EnumMap<VelocityDirection, Double> targetVelocity = defaultedDirectionMap(0d); // Actual velocity target
-    protected EnumMap<VelocityDirection, Double> velocitySet = defaultedDirectionMap(0d); // The previous period's set
-    protected EnumMap<VelocityDirection, Double> velocityMeasured = defaultedDirectionMap(0d); // The next period's target velocities from mecanum math
+    protected Map<VelocityDirection, Double> velocity = defaultedDirectionMap(0d); // target velocity for next period
+    protected Map<VelocityDirection, Double> targetVelocity = defaultedDirectionMap(0d); // Actual velocity target
+    protected Map<VelocityDirection, Double> velocitySet = defaultedDirectionMap(0d); // The previous period's set
+    protected Map<VelocityDirection, Double> velocityMeasured = defaultedDirectionMap(0d); // The next period's target velocities from mecanum math
 
 // NOTE: If you uncomment the debug stuff here don't forget to do the same to the commented set in periodic
 // Debug flag gets set to true every Nth call to beginUpdate().
@@ -115,17 +116,17 @@ public abstract class AbstractChassis<DriveModule > extends SubsystemBase implem
 
     @Override
     public EnumMap<VelocityDirection, Double> getVelocitySet() {
-        return targetVelocity.clone();
+        return new EnumMap<>(targetVelocity);
     }
 
     @Override
     public EnumMap<VelocityDirection, Double> getVelocityCalculated() {
-        return velocity.clone();
+        return new EnumMap<>(velocity);
     }
 
     @Override
     public EnumMap<VelocityDirection, Double> getVelocityMeasured() {
-        return velocityMeasured.clone();
+        return new EnumMap<>(velocityMeasured);
     }
 
     @Override
