@@ -13,13 +13,12 @@ import org.usfirst.frc.team2077.common.math.*;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.usfirst.frc.team2077.common.math.AccelerationLimits.*;
 
-import java.util.EnumMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.*;
 
 import static org.usfirst.frc.team2077.common.drivetrain.MecanumMath.VelocityDirection.*;
 
-public abstract class AbstractChassis<DriveModule > extends SubsystemBase implements DriveChassisIF {
+public abstract class AbstractChassis<DriveModule> extends SubsystemBase implements DriveChassisIF {
 
     private static <T> EnumMap<VelocityDirection, T> defaultedDirectionMap(T defaultValue) {
         EnumMap<VelocityDirection, T> newMap = new EnumMap<>(VelocityDirection.class);

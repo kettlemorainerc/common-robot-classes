@@ -4,8 +4,6 @@ package org.usfirst.frc.team2077.common.drivetrain;
 import com.revrobotics.*;
 import org.usfirst.frc.team2077.common.WheelPosition;
 
-import static org.usfirst.frc.team2077.common.WheelPosition.*;
-
 public class SparkNeoDriveModule extends CANSparkMax implements DriveModuleIF {
     private static final double WHEEL_GEAR_RATIO = 10.714, WHEEL_RADIUS = 4;
     private static final double LAUNCHER_GEAR_RATIO = 1, LAUNCHER_WHEEL_RADIUS = 2;
@@ -13,10 +11,10 @@ public class SparkNeoDriveModule extends CANSparkMax implements DriveModuleIF {
     private static final boolean USE_SOFTWARE_PID = true;
 
     public enum DrivePosition {
-        FRONT_RIGHT(NORTH_EAST, 2, true, WHEEL_GEAR_RATIO, WHEEL_RADIUS, MAX_WHEEL_RPM, 1e-4, 1e-6, 0),
-        BACK_RIGHT(SOUTH_EAST, 1, true, WHEEL_GEAR_RATIO, WHEEL_RADIUS, MAX_WHEEL_RPM, 1.1e-4, 1e-6, 0),
-        BACK_LEFT(SOUTH_WEST, 4, false, WHEEL_GEAR_RATIO, WHEEL_RADIUS, MAX_WHEEL_RPM, 1.4e-4, 1e-6, 0),
-        FRONT_LEFT(NORTH_WEST, 3, false, WHEEL_GEAR_RATIO, WHEEL_RADIUS, MAX_WHEEL_RPM, 1.4e-4, 1e-6, 0),
+        FRONT_RIGHT(WheelPosition.FRONT_RIGHT, 2, true, WHEEL_GEAR_RATIO, WHEEL_RADIUS, MAX_WHEEL_RPM, 1e-4, 1e-6, 0),
+        BACK_RIGHT(WheelPosition.BACK_RIGHT, 1, true, WHEEL_GEAR_RATIO, WHEEL_RADIUS, MAX_WHEEL_RPM, 1.1e-4, 1e-6, 0),
+        BACK_LEFT(WheelPosition.BACK_LEFT, 4, false, WHEEL_GEAR_RATIO, WHEEL_RADIUS, MAX_WHEEL_RPM, 1.4e-4, 1e-6, 0),
+        FRONT_LEFT(WheelPosition.FRONT_LEFT, 3, false, WHEEL_GEAR_RATIO, WHEEL_RADIUS, MAX_WHEEL_RPM, 1.4e-4, 1e-6, 0),
 
         SHOOTER(null, 5, false, LAUNCHER_GEAR_RATIO, LAUNCHER_WHEEL_RADIUS, MAX_SHOOTER_RPM);        ;
 
