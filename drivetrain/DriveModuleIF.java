@@ -17,14 +17,16 @@ public interface DriveModuleIF {
     /**
      * Maximum speed at which this wheel may be run.
      * {@link #setVelocity} should limit input values to this value (positive or negative).
+     *
      * @return Maximum speed in inches/second.
      */
     double getMaximumSpeed();
 
     /**
      * Set velocity for this wheel.
+     *
      * @param velocity In inches/second.
-     * Positive values are robot-forward ("north"), negative backward/south.
+     *                 Positive values are robot-forward ("north"), negative backward/south.
      */
     void setVelocity(double velocity);
 
@@ -35,6 +37,7 @@ public interface DriveModuleIF {
      * This should be a direct measurement from an encoder if available,
      * otherwise the set point as passed to {@link #setVelocity} or reported by
      * the motor controller.
+     *
      * @return Velocity In inches/second.
      */
     double getVelocity();
@@ -43,6 +46,7 @@ public interface DriveModuleIF {
      * Distance traveled by the wheel since startup or the last reset.
      * This should be a direct measurement from an encoder if available,
      * otherwise computed by integrating velocity over time.
+     *
      * @return Distance in inches.
      */
     double getDistance();

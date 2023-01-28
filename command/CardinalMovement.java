@@ -7,37 +7,39 @@ package org.usfirst.frc.team2077.common.command;
 
 import edu.wpi.first.wpilibj2.command.*;
 import org.usfirst.frc.team2077.common.*;
+import org.usfirst.frc.team2077.common.control.DriveStick;
 import org.usfirst.frc.team2077.common.drivetrain.*;
 
 public class CardinalMovement extends CommandBase {
-	public static final double ACCELERATION_G_LIMIT = .4;
-	public static final double DECELERATION_G_LIMIT = ACCELERATION_G_LIMIT; //1e10 //.35 is the value used for the 03-05-21 version
+    public static final double ACCELERATION_G_LIMIT = .4;
+    public static final double DECELERATION_G_LIMIT = ACCELERATION_G_LIMIT; //1e10 //.35 is the value used for the 03-05-21 version
 
-	protected DriveStick stick;
-	protected DriveChassisIF chassis;
+    protected DriveStick stick;
+    protected DriveChassisIF chassis;
 
-	public CardinalMovement(RobotHardware hardware, DriveStick stick) {
-		addRequirements(hardware.getPosition());
+    public CardinalMovement(HardwareRequirements<?, ?> hardware, DriveStick stick) {
+        addRequirements(hardware.getPosition());
 
-		this.stick = stick;
-		this.chassis = hardware.getChassis();
-		this.chassis.setGLimits(ACCELERATION_G_LIMIT, DECELERATION_G_LIMIT);
-	}
+        this.stick = stick;
+        this.chassis = hardware.getChassis();
+        this.chassis.setGLimits(ACCELERATION_G_LIMIT, DECELERATION_G_LIMIT);
+    }
 
-	@Override public void execute() {
-		double north = -stick.getNorth();
-		double east = stick.getEast();
+    @Override public void execute() {
+        double north = -stick.getNorth();
+        double east = stick.getEast();
 
-		// Tank drive
+        // Tank drive
 //		north = Math.abs(north) >= Math.abs(east) ? north : 0;
 //		east = Math.abs(east) > Math.abs(north) ? east : 0;
 
-		chassis.setVelocityPercent(north, east);
-	}
+        chassis.setVelocityPercent(north, east);
+    }
 
-	@Override public void end(boolean interrupted) {}
+    @Override public void end(boolean interrupted) {
+    }
 
-	@Override public boolean isFinished() {
-		return false;
-	}
+    @Override public boolean isFinished() {
+        return false;
+    }
 }
