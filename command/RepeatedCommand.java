@@ -20,16 +20,17 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
  */
 public abstract class RepeatedCommand extends BindableCommand {
     @Override public void bind(JoystickButton button) {
-        button.whileHeld(this,true);
+        button.whileTrue(this);
     }
 
     /**
      * If your command has an end point, say holding the button performs the end-game automatically, this should be
      * overridden to return true upon the action(s) being completed.
-     *
+     * <p>
      * Typically, it is okay to leave this as-is.
-     * @see #initialize() If this is overridden you most likely want to reset/gauge state in the initialize function
+     *
      * @return false
+     * @see #initialize() If this is overridden you most likely want to reset/gauge state in the initialize function
      */
     @Override public boolean isFinished() {
         return false;
@@ -39,8 +40,9 @@ public abstract class RepeatedCommand extends BindableCommand {
      * In most instances if you override {@link #isFinished()} you should also override this.
      * <br>
      * You should reset any state related to the executing actions to their desired start-point here.
-     * */
-    @Override public void initialize() {}
+     */
+    @Override public void initialize() {
+    }
 
     /**
      * In the {@link RepeatedCommand given example} you would be setting the motor(s) RPM or percent output

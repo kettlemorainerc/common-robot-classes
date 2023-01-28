@@ -16,7 +16,7 @@ public class SparkNeoDriveModule extends CANSparkMax implements DriveModuleIF {
         BACK_LEFT(WheelPosition.BACK_LEFT, 4, false, WHEEL_GEAR_RATIO, WHEEL_RADIUS, MAX_WHEEL_RPM, 1.4e-4, 1e-6, 0),
         FRONT_LEFT(WheelPosition.FRONT_LEFT, 3, false, WHEEL_GEAR_RATIO, WHEEL_RADIUS, MAX_WHEEL_RPM, 1.4e-4, 1e-6, 0),
 
-        SHOOTER(null, 5, false, LAUNCHER_GEAR_RATIO, LAUNCHER_WHEEL_RADIUS, MAX_SHOOTER_RPM);        ;
+        SHOOTER(null, 5, false, LAUNCHER_GEAR_RATIO, LAUNCHER_WHEEL_RADIUS, MAX_SHOOTER_RPM);;
 
         public final double gearRatio;
         public final double radius;
@@ -43,7 +43,7 @@ public class SparkNeoDriveModule extends CANSparkMax implements DriveModuleIF {
         }
 
         public static DrivePosition forWheelPosition(WheelPosition pos) {
-            for(DrivePosition drivePos : values()) if (drivePos.WHEEL_POSITION == pos) return drivePos;
+            for (DrivePosition drivePos : values()) if (drivePos.WHEEL_POSITION == pos) return drivePos;
 
             throw new IllegalArgumentException("No DrivePosition found for wheel position: " + pos);
         }
@@ -65,7 +65,7 @@ public class SparkNeoDriveModule extends CANSparkMax implements DriveModuleIF {
         pidController = this.getPIDController();
         encoder = this.getEncoder();
 
-        if(USE_SOFTWARE_PID || position == DrivePosition.SHOOTER) {
+        if (USE_SOFTWARE_PID || position == DrivePosition.SHOOTER) {
             pidController.setP(position.P);
             pidController.setI(position.I);
             pidController.setD(position.D);
@@ -79,15 +79,15 @@ public class SparkNeoDriveModule extends CANSparkMax implements DriveModuleIF {
     public DrivePosition getPosition() {
         return position;
     }
-    
+
     @Override
     public double getMaximumSpeed() {
-        return (maxRPM/position.gearRatio) / (60 / (2 * Math.PI * position.radius));
+        return (maxRPM / position.gearRatio) / (60 / (2 * Math.PI * position.radius));
     }
 
     public void setVelocity(final double velocity) {
         //convert from inches/second to rpm
-        setPoint = velocity*position.gearRatio*60/circumference;
+        setPoint = velocity * position.gearRatio * 60 / circumference;
 //        if (setPoint > maxRPM) {
 //            setPoint = maxRPM;
 //        }
@@ -125,8 +125,14 @@ public class SparkNeoDriveModule extends CANSparkMax implements DriveModuleIF {
         return setPoint;
     }
 
+    private static final double SECONDS_IN_MINUTE = 60;
     public double getVelocity() {
-        final double velocity = encoder.getVelocity()/60/position.gearRatio*circumference; //need to still convert to inches per second
+        double motorRPM = encoder.getVelocity();
+        double motorRPS = motorRPM / SECONDS_IN_MINUTE;
+        double wheelRPS = motorRPS / position.gearRatio;
+        double wheelInPS = wheelRPS * circumference;
+        final double velocity = wheelInPS;
+
         if (position.INVERSE) {
             return -velocity;
         } else {
@@ -135,7 +141,7 @@ public class SparkNeoDriveModule extends CANSparkMax implements DriveModuleIF {
     }
 
     public double getDistance() {
-        return encoder.getPosition()/position.gearRatio*circumference;
+        return encoder.getPosition() / position.gearRatio * circumference;
     }
 
     public void resetDistance() {

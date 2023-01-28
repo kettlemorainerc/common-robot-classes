@@ -19,12 +19,13 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
  */
 public abstract class SelfDefinedCommand extends BindableCommand {
 
-    @Override public void bind(JoystickButton button){
-        button.whenPressed(this);
+    @Override public void bind(JoystickButton button) {
+        button.onTrue(this);
     }
 
     /**
      * What determines when this command is done?
+     *
      * @return is the command done executing
      */
     public abstract boolean isFinished();
@@ -41,6 +42,7 @@ public abstract class SelfDefinedCommand extends BindableCommand {
 
     /**
      * Stop any subsystems/motors that this command interacts with here.
+     *
      * @param interrupted was the command interrupted
      */
     public abstract void end(boolean interrupted);

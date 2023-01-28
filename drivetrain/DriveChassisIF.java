@@ -7,9 +7,9 @@ package org.usfirst.frc.team2077.common.drivetrain;
 
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import org.usfirst.frc.team2077.common.VelocityDirection;
-import org.usfirst.frc.team2077.common.math.AccelerationLimits;
+import org.usfirst.frc.team2077.common.math.*;
 
-import java.util.EnumMap;
+import java.util.*;
 
 /*
 Notes on units:
@@ -27,38 +27,46 @@ Notes on units:
 public interface DriveChassisIF extends Subsystem {
 
     void moveAbsolute(double north, double east, double heading);
+
     void moveAbsolute(double north, double east);
+
     void rotateAbsolute(double clockwise);
-    
+
     void moveRelative(double north, double east, double heading);
+
     void moveRelative(double north, double east);
+
     void rotateRelative(double clockwise);
 
     void setPosition(double north, double east, double heading);
-    EnumMap<VelocityDirection, Double> getPosition();
+
+    Position getPosition();
 
 
     /**
      * Maximum velocities as determined by {@link DriveModuleIF} capabilities.
      * {@link #setVelocity} and {@link #setVelocity} should limit input values
      * to these values (positive or negative).
+     *
      * @return {north, east, rotation} Units are inches and degrees per second.
      */
-    EnumMap<VelocityDirection, Double> getMaximumVelocity();
+    Map<VelocityDirection, Double> getMaximumVelocity();
 
     /**
      * Minimum velocities necessary to ensure motion, as determined by
      * {@link DriveModuleIF} capabilities.
      * {@link #setVelocity} and {@link #setVelocity} should limit input values
      * to these values (positive or negative).
+     *
      * @return {north, east, rotation} Units are inches and degrees per second.
      */
-    EnumMap<VelocityDirection, Double> getMinimumVelocity();
+    Map<VelocityDirection, Double> getMinimumVelocity();
 
     /**
      * Set maximum allowable linear (N/S or E/W) acceleration and deceleration.
      * Rotational values are set in proportion to the ratios in {@link #getMaximumVelocity}.
      * Used to control wheelspin or lockup, depending on surface traction.
+     *
      * @param linearAcceleration In units of G (acceleration of gravity).
      * @param linearDeceleration In units of G.
      */
@@ -76,55 +84,63 @@ public interface DriveChassisIF extends Subsystem {
 
     /**
      * Acceleration and deceleration limits in units inches/second/second and degrees/second/second.
+     *
      * @return {linearAcceleration, linearDeceleration, rotationalAcceleration, rotationalDeceleration}
      */
     AccelerationLimits getAccelerationLimits();
 
     /**
-     * @param north In inches per second.
-     * @param east In inches per second.
-     * @param clockwise In degrees per second.
+     * @param north              In inches per second.
+     * @param east               In inches per second.
+     * @param clockwise          In degrees per second.
      * @param accelerationLimits As returned by {@link #getAccelerationLimits()}.
      */
     void setVelocity(double north, double east, double clockwise, AccelerationLimits accelerationLimits);
+
     /**
-     * @param north In inches per second.
-     * @param east In inches per second.
+     * @param north     In inches per second.
+     * @param east      In inches per second.
      * @param clockwise In degrees per second.
      */
     void setVelocity(double north, double east, double clockwise);
+
     /**
-     * @param north In inches per second.
-     * @param east In inches per second.
+     * @param north              In inches per second.
+     * @param east               In inches per second.
      * @param accelerationLimits As returned by {@link #getAccelerationLimits()}.
      */
     void setVelocity(double north, double east, AccelerationLimits accelerationLimits);
+
     /**
      * @param north In inches per second.
-     * @param east In inches per second.
+     * @param east  In inches per second.
      */
     void setVelocity(double north, double east);
+
     /**
-     * @param clockwise In degrees per second.
+     * @param clockwise          In degrees per second.
      * @param accelerationLimits As returned by {@link #getAccelerationLimits()}.
      */
     void setRotation(double clockwise, AccelerationLimits accelerationLimits);
+
     /**
      * @param clockwise In degrees per second.
      */
     void setRotation(double clockwise);
 
     /**
-     * @param north Fraction of nominal maximum in range -1.0 to 1.0.
-     * @param east Fraction of nominal maximum in range -1.0 to 1.0.
+     * @param north     Fraction of nominal maximum in range -1.0 to 1.0.
+     * @param east      Fraction of nominal maximum in range -1.0 to 1.0.
      * @param clockwise Fraction of nominal maximum in range -1.0 to 1.0.
      */
     void setVelocityPercent(double north, double east, double clockwise);
+
     /**
      * @param north Fraction of nominal maximum in range -1.0 to 1.0.
-     * @param east Fraction of nominal maximum in range -1.0 to 1.0.
+     * @param east  Fraction of nominal maximum in range -1.0 to 1.0.
      */
     void setVelocityPercent(double north, double east);
+
     /**
      * @param clockwise Fraction of nominal maximum in range -1.0 to 1.0.
      */
@@ -137,20 +153,23 @@ public interface DriveChassisIF extends Subsystem {
 
     /**
      * Velocity set point.
+     *
      * @return {north, east, rotation} Units are inches and degrees per second.
      */
-    EnumMap<VelocityDirection, Double> getVelocitySet();
+    Map<VelocityDirection, Double> getVelocitySet();
 
     /**
      * Internal velocity set point, after adjustment for acceleration and velocity limits.
+     *
      * @return {north, east, rotation} Units are inches and degrees per second.
      */
-    EnumMap<VelocityDirection, Double> getVelocityCalculated();
+    Map<VelocityDirection, Double> getVelocityCalculated();
 
     /**
      * Measured velocity based on motor or wheel encoders if present.
      * May be affected by acceleration limits or calculated from relative settings.
+     *
      * @return {north, east, rotation} Units are inches and degrees per second.
      */
-    EnumMap<VelocityDirection, Double> getVelocityMeasured();
+    Map<VelocityDirection, Double> getVelocityMeasured();
 }

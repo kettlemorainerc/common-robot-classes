@@ -16,7 +16,7 @@ import java.util.*;
 public class Move extends CommandBase {
 	public static final double ACCELERATION_G_LIMIT = .1;
 	public static final double DECELERATION_G_LIMIT = .3;
-	private final AbstractChassis chassis;
+	private final AbstractChassis<?> chassis;
 	private final double[] distanceTotal; // {north, east, rotation} (signed)
 	private final int method; // 1 2 or 3 (#args to setVelocity/setRotation)
 
@@ -54,13 +54,13 @@ public class Move extends CommandBase {
 	@Override
 	public void initialize() {
 
-		EnumMap<VelocityDirection, Double> max = chassis.getMaximumVelocity();
-		EnumMap<VelocityDirection, Double> min = chassis.getMinimumVelocity();
+		Map<VelocityDirection, Double> max = chassis.getMaximumVelocity();
+		Map<VelocityDirection, Double> min = chassis.getMinimumVelocity();
 
 		// scale factors for north/east/rotation by fraction of maximum velocity
 		double[] scale = {
-			Math.abs(distanceTotal[0]) / max.get(VelocityDirection.NORTH),
-			Math.abs(distanceTotal[1]) / max.get(VelocityDirection.EAST),
+			Math.abs(distanceTotal[0]) / max.get(VelocityDirection.FORWARD),
+			Math.abs(distanceTotal[1]) / max.get(VelocityDirection.STRAFE),
 			Math.abs(distanceTotal[2]) / max.get(VelocityDirection.ROTATION)
 		};
 		double maxScale = Math.max(scale[0], Math.max(scale[1], scale[2]));
@@ -95,9 +95,9 @@ public class Move extends CommandBase {
 	@Override
 	public void execute() {
 
-		EnumMap<VelocityDirection, Double> currentVelocity = chassis.getVelocityCalculated();
+		Map<VelocityDirection, Double> currentVelocity = chassis.getVelocityCalculated();
 
-		EnumMap<VelocityDirection, Double> distanceTraveled = (new Position(chassis.getPosition())).distanceRelative(
+		Map<VelocityDirection, Double> distanceTraveled = (new Position(chassis.getPosition())).distanceRelative(
 			origin);
 
 		double[] newVelocity = new double[3];

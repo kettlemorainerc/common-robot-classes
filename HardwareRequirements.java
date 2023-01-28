@@ -9,30 +9,22 @@ import java.util.EnumMap;
 import java.util.Map;
 
 public abstract class HardwareRequirements<DriveModule, Chassis extends AbstractChassis<DriveModule>> {
-    private final Subsystem heading = makeHeading();
-    private final Subsystem position = makePosition();
-    private final Chassis chassis = makeChassis();
-    private final Map<WheelPosition, DriveModule> modules = new EnumMap<>(WheelPosition.class);
-    private final AngleSensor angleSensor = null;
-    private final AHRS navX = makeNavX();
+    private final Subsystem heading;
+    private final Subsystem position;
+    private final AngleSensor angleSensor;
+    private final AHRS navX;
 
     public HardwareRequirements() {
-        for(WheelPosition pos : WheelPosition.values()) {
-            modules.put(pos, makeModule(pos));
-        }
+        heading = makeHeading();
+        position = makePosition();
+        angleSensor = makeAngleSensor();
+        navX = makeNavX();
     }
 
     protected AngleSensor makeAngleSensor() {return null;}
     protected AHRS makeNavX() {return null;}
     protected Subsystem makeHeading() {return new Subsystem() {};}
     protected Subsystem makePosition() {return new Subsystem() {};}
-
-    protected abstract Chassis makeChassis();
-    protected abstract DriveModule makeModule(WheelPosition position);
-
-    public DriveModule getWheel(WheelPosition pos) {
-        return modules.get(pos);
-    }
 
     public Subsystem getHeading() {
         return heading;
@@ -42,9 +34,8 @@ public abstract class HardwareRequirements<DriveModule, Chassis extends Abstract
         return position;
     }
 
-    public Chassis getChassis() {
-        return chassis;
-    }
+    public abstract Chassis getChassis();
+    public abstract DriveModule getWheel(WheelPosition pos);
 
     public AngleSensor getAngleSensor() {
         return angleSensor;

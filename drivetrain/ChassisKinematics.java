@@ -3,9 +3,10 @@ package org.usfirst.frc.team2077.common.drivetrain;
 import org.usfirst.frc.team2077.common.VelocityDirection;
 import org.usfirst.frc.team2077.common.WheelPosition;
 
-import java.util.EnumMap;
+import java.util.*;
 
 public interface ChassisKinematics<InverseResult, ForwardArgs> {
-    EnumMap<WheelPosition, InverseResult> targetsForVelocity(EnumMap<VelocityDirection, Double> velocityTarget);
-    EnumMap<VelocityDirection, Double> velocityForTargets(EnumMap<WheelPosition, ForwardArgs> targets);
+    Map<WheelPosition, InverseResult> targetsForVelocity(Map<VelocityDirection, Double> velocityTarget);
+
+    Map<VelocityDirection, Double> velocityForTargets(Map<WheelPosition, ForwardArgs> targets);
 }

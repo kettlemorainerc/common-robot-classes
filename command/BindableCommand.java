@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 public abstract class BindableCommand extends CommandBase {
     /**
      * Bind this command to a given joystick button
+     *
      * @param button a joystick button
      */
     public abstract void bind(JoystickButton button);

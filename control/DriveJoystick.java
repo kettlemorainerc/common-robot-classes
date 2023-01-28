@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj.*;
  * A joystick that can be used for driving. This might be better labeled a "Flight stick" as it's typically used to
  * represent the silver base/black stick.
  * <br><br>
- *  {@link DriveXboxController} is used for xbox controllers
+ * {@link DriveXboxController} is used for xbox controllers
  */
 public class DriveJoystick extends Joystick implements DriveStick {
     private static final int DEFAULT_ROTATION_AXIS = AxisType.kZ.value;
