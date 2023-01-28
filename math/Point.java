@@ -28,48 +28,48 @@ public class Point {
             WheelPosition.class,
             VelocityDirection.class
         );
-        wheelCoords.set(NORTH_EAST, NORTH, length / 2 - north);
-        wheelCoords.set(NORTH_EAST, EAST, width / 2 - east);
-        wheelCoords.set(NORTH_WEST, NORTH, length / 2 - north);
-        wheelCoords.set(NORTH_WEST, EAST, -width / 2 - east);
+        wheelCoords.set(FRONT_RIGHT, NORTH, length / 2 - north);
+        wheelCoords.set(FRONT_RIGHT, EAST, width / 2 - east);
+        wheelCoords.set(FRONT_LEFT, NORTH, length / 2 - north);
+        wheelCoords.set(FRONT_LEFT, EAST, -width / 2 - east);
 
-        wheelCoords.set(SOUTH_EAST, NORTH, -length / 2 - north);
-        wheelCoords.set(SOUTH_EAST, EAST, width / 2 - east);
-        wheelCoords.set(SOUTH_WEST, NORTH, -length / 2 - north);
-        wheelCoords.set(SOUTH_WEST, EAST, -width / 2 - east);
+        wheelCoords.set(BACK_RIGHT, NORTH, -length / 2 - north);
+        wheelCoords.set(BACK_RIGHT, EAST, width / 2 - east);
+        wheelCoords.set(BACK_LEFT, NORTH, -length / 2 - north);
+        wheelCoords.set(BACK_LEFT, EAST, -width / 2 - east);
 
         EnumMatrix<VelocityDirection, WheelPosition> inverseMatrix = new EnumMatrix<>(
             VelocityDirection.class,
             WheelPosition.class
         );
-        inverseMatrix.set(NORTH, NORTH_EAST, 1d);
-        inverseMatrix.set(EAST, NORTH_EAST, -1d);
+        inverseMatrix.set(NORTH, FRONT_RIGHT, 1d);
+        inverseMatrix.set(EAST, FRONT_RIGHT, -1d);
         inverseMatrix.set(
             ROTATION,
-            NORTH_EAST,
-            -wheelCoords.get(NORTH_EAST, NORTH) - wheelCoords.get(NORTH_EAST, EAST)
+                FRONT_RIGHT,
+            -wheelCoords.get(FRONT_RIGHT, NORTH) - wheelCoords.get(FRONT_RIGHT, EAST)
         );
-        inverseMatrix.set(NORTH, NORTH_WEST, 1d);
-        inverseMatrix.set(EAST, NORTH_WEST, 1d);
+        inverseMatrix.set(NORTH, FRONT_LEFT, 1d);
+        inverseMatrix.set(EAST, FRONT_LEFT, 1d);
         inverseMatrix.set(
             ROTATION,
-            NORTH_WEST,
-            wheelCoords.get(NORTH_WEST, NORTH) - wheelCoords.get(NORTH_WEST, EAST)
+                FRONT_LEFT,
+            wheelCoords.get(FRONT_LEFT, NORTH) - wheelCoords.get(FRONT_LEFT, EAST)
         );
 
-        inverseMatrix.set(NORTH, SOUTH_EAST, 1d);
-        inverseMatrix.set(EAST, SOUTH_EAST, 1d);
+        inverseMatrix.set(NORTH, BACK_RIGHT, 1d);
+        inverseMatrix.set(EAST, BACK_RIGHT, 1d);
         inverseMatrix.set(
             ROTATION,
-            SOUTH_EAST,
-            wheelCoords.get(SOUTH_EAST, NORTH) - wheelCoords.get(SOUTH_EAST, EAST)
+                BACK_RIGHT,
+            wheelCoords.get(BACK_RIGHT, NORTH) - wheelCoords.get(BACK_RIGHT, EAST)
         );
-        inverseMatrix.set(NORTH, SOUTH_WEST, 1d);
-        inverseMatrix.set(EAST, SOUTH_WEST, -1d);
+        inverseMatrix.set(NORTH, BACK_LEFT, 1d);
+        inverseMatrix.set(EAST, BACK_LEFT, -1d);
         inverseMatrix.set(
             ROTATION,
-            SOUTH_WEST,
-            -wheelCoords.get(SOUTH_WEST, NORTH) - wheelCoords.get(SOUTH_WEST, EAST)
+                BACK_LEFT,
+            -wheelCoords.get(BACK_LEFT, NORTH) - wheelCoords.get(BACK_LEFT, EAST)
         );
 
         return inverseMatrix;
