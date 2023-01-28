@@ -1,4 +1,4 @@
-package org.usfirst.frc.team2077.common;
+package org.usfirst.frc.team2077.common.control;
 
 /**
  * An interface dictating required inputs for it to support being used to "drive" utilizing our movement related commands.

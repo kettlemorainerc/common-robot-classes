@@ -1,4 +1,4 @@
-package org.usfirst.frc.team2077.common;
+package org.usfirst.frc.team2077.common.control;
 
 import edu.wpi.first.wpilibj.*;
 

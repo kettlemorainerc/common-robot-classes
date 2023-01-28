@@ -6,7 +6,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import com.kauailabs.navx.frc.AHRS;
 
-import org.usfirst.frc.team2077.common.RobotHardware;
+import org.usfirst.frc.team2077.common.HardwareRequirements;
 
 public class AngleSensor {
 	// these fields are private to the timer thread
@@ -17,7 +17,7 @@ public class AngleSensor {
 
 	private AtomicReference<Double> angleREF = new AtomicReference<>(0.);
 
-	public AngleSensor(RobotHardware hardware) {
+	public AngleSensor(HardwareRequirements hardware) {
 		navX = hardware.getNavX();
 		System.out.println("NavX:" + navX);
 		System.out.println("Connected:" + navX.isConnected());

@@ -5,11 +5,11 @@
 
 package org.usfirst.frc.team2077.common.math;
 
-import org.usfirst.frc.team2077.common.drivetrain.MecanumMath.VelocityDirection;
+import org.usfirst.frc.team2077.common.VelocityDirection;
 
 import java.util.EnumMap;
 
-import static org.usfirst.frc.team2077.common.drivetrain.MecanumMath.VelocityDirection.*;
+import static org.usfirst.frc.team2077.common.VelocityDirection.*;
 
 public class Position extends EnumMap<VelocityDirection, Double> {
 
@@ -67,6 +67,7 @@ public class Position extends EnumMap<VelocityDirection, Double> {
         double distance = Math.sqrt(absolute.get(NORTH)*absolute.get(NORTH) + absolute.get(EAST)*absolute.get(EAST)); // straight line
         double direction = Math.atan2(absolute.get(EAST), absolute.get(NORTH)) - Math.toRadians(origin.get(ROTATION));
         double directionCurve = 0;
+
         if ( distance != 0 && rotation != 0) {
             double radians = Math.toRadians(rotation);
             double radius = distance/2/Math.sin(radians/2);

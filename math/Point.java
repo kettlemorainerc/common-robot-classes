@@ -1,9 +1,9 @@
 package org.usfirst.frc.team2077.common.math;
 
+import org.usfirst.frc.team2077.common.VelocityDirection;
 import org.usfirst.frc.team2077.common.WheelPosition;
-import org.usfirst.frc.team2077.common.drivetrain.*;
 
-import static org.usfirst.frc.team2077.common.drivetrain.MecanumMath.VelocityDirection.*;
+import static org.usfirst.frc.team2077.common.VelocityDirection.*;
 import static org.usfirst.frc.team2077.common.WheelPosition.*;
 
 public class Point {
@@ -20,13 +20,13 @@ public class Point {
         this.east = east;
     }
 
-    public EnumMatrix<MecanumMath.VelocityDirection, WheelPosition> inverseMatrixForBotSize(
+    public EnumMatrix<VelocityDirection, WheelPosition> inverseMatrixForBotSize(
         double length,
         double width
     ) {
-        EnumMatrix<WheelPosition, MecanumMath.VelocityDirection> wheelCoords = new EnumMatrix<>(
+        EnumMatrix<WheelPosition, VelocityDirection> wheelCoords = new EnumMatrix<>(
             WheelPosition.class,
-            MecanumMath.VelocityDirection.class
+            VelocityDirection.class
         );
         wheelCoords.set(NORTH_EAST, NORTH, length / 2 - north);
         wheelCoords.set(NORTH_EAST, EAST, width / 2 - east);
@@ -38,8 +38,8 @@ public class Point {
         wheelCoords.set(SOUTH_WEST, NORTH, -length / 2 - north);
         wheelCoords.set(SOUTH_WEST, EAST, -width / 2 - east);
 
-        EnumMatrix<MecanumMath.VelocityDirection, WheelPosition> inverseMatrix = new EnumMatrix<>(
-            MecanumMath.VelocityDirection.class,
+        EnumMatrix<VelocityDirection, WheelPosition> inverseMatrix = new EnumMatrix<>(
+            VelocityDirection.class,
             WheelPosition.class
         );
         inverseMatrix.set(NORTH, NORTH_EAST, 1d);

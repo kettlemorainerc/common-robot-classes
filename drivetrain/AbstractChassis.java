@@ -6,8 +6,8 @@
 package org.usfirst.frc.team2077.common.drivetrain;
 
 import org.usfirst.frc.team2077.common.Clock;
+import org.usfirst.frc.team2077.common.VelocityDirection;
 import org.usfirst.frc.team2077.common.WheelPosition;
-import org.usfirst.frc.team2077.common.drivetrain.MecanumMath.*;
 import org.usfirst.frc.team2077.common.math.*;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -16,9 +16,9 @@ import org.usfirst.frc.team2077.common.math.AccelerationLimits.*;
 import java.util.EnumMap;
 import java.util.function.*;
 
-import static org.usfirst.frc.team2077.common.drivetrain.MecanumMath.VelocityDirection.*;
+import static org.usfirst.frc.team2077.common.VelocityDirection.*;
 
-public abstract class AbstractChassis<DriveModule > extends SubsystemBase implements DriveChassisIF {
+public abstract class AbstractChassis<DriveModule, Kinematics extends ChassisKinematics> extends SubsystemBase implements DriveChassisIF {
 
     private static <T> EnumMap<VelocityDirection, T> defaultedDirectionMap(T defaultValue) {
         EnumMap<VelocityDirection, T> newMap = new EnumMap<>(VelocityDirection.class);
@@ -26,15 +26,21 @@ public abstract class AbstractChassis<DriveModule > extends SubsystemBase implem
         return newMap;
     }
 
-    public final EnumMap<WheelPosition, DriveModule> driveModule;
+    /** DriveModules (wheel container classes, typically) by their position */
+    public final EnumMap<WheelPosition, DriveModule> driveModules;
+    private final Kinematics math;
     protected final double wheelbase;
     protected final double trackWidth;
     protected final double wheelRadius;
     protected final Supplier<Double> getSeconds;
 
+    /** The maximum allowed N/E velocity */
     protected double maximumSpeed;
+    /** The maximum allowed Rotation velocity */
     protected double maximumRotation;
+    /** The minimum required velocity to actually have motion for our N/E motors */
     protected double minimumSpeed;
+    /** The minimum required wheel velocity to actually turn our wheels for rotation */
     protected double minimumRotation;
 
     // Ideally accel/decel values are set just below wheelspin or skidding to a stop.
@@ -43,34 +49,39 @@ public abstract class AbstractChassis<DriveModule > extends SubsystemBase implem
     // For safety err on the low side for acceleration, high for deceleration.
     protected AccelerationLimits accelerationLimits = new AccelerationLimits(false, .5, .5, this);
 
+    /** The time previously returned by {@link #getSeconds} */
     protected double lastUpdateTime = 0;
+    /** The difference between lastUpdateTime and the previous update time */
     protected double timeSinceLastUpdate = 0;
 
+    /** The position as measured by {@link #velocitySet} */
     protected final Position positionSet = new Position(); // Continuously updated by integrating velocity setpoints (velocitySet_).
+    /** The position as measured by {@link #velocityMeasured} */
     protected final Position positionMeasured = new Position(); // Continuously updated by integrating measured velocities (velocityMeasured_).
 
-    protected EnumMap<VelocityDirection, Double> velocity = defaultedDirectionMap(0d); // target velocity for next period
-    protected EnumMap<VelocityDirection, Double> targetVelocity = defaultedDirectionMap(0d); // Actual velocity target
-    protected EnumMap<VelocityDirection, Double> velocitySet = defaultedDirectionMap(0d); // The previous period's set
-    protected EnumMap<VelocityDirection, Double> velocityMeasured = defaultedDirectionMap(0d); // The next period's target velocities from mecanum math
+    /** target velocity for next period */
+    protected EnumMap<VelocityDirection, Double> velocity = defaultedDirectionMap(0d);
+    /** Actual velocity target */
+    protected EnumMap<VelocityDirection, Double> targetVelocity = defaultedDirectionMap(0d);
+    /** The previous period's set */
+    protected EnumMap<VelocityDirection, Double> velocitySet = defaultedDirectionMap(0d);
+    /** The next period's target velocities from kinematics */
+    protected EnumMap<VelocityDirection, Double> velocityMeasured = defaultedDirectionMap(0d);
 
-// NOTE: If you uncomment the debug stuff here don't forget to do the same to the commented set in periodic
-// Debug flag gets set to true every Nth call to beginUpdate().
-//    protected int debugFrequency_ = 100; // 50 / s
-//    private long debugCounter_ = 0; // internal counter
-//    public boolean debug_ = false;
-
-    public AbstractChassis(EnumMap<WheelPosition, DriveModule> driveModule, double wheelbase, double trackWidth, double wheelRadius, Supplier<Double> getSeconds) {
-        this.driveModule = driveModule;
+    public AbstractChassis(EnumMap<WheelPosition, DriveModule> driveModules, double wheelbase, double trackWidth, double wheelRadius, Supplier<Double> getSeconds) {
+        this.driveModules = driveModules;
         this.wheelbase = wheelbase;
         this.trackWidth = trackWidth;
         this.wheelRadius = wheelRadius;
         this.getSeconds = getSeconds;
+        this.math = makeKinematics(wheelbase, trackWidth);
     }
 
-    public AbstractChassis(EnumMap<WheelPosition, DriveModule> driveModule, double wheelbase, double trackWidth, double wheelRadius) {
-        this(driveModule, wheelbase, trackWidth, wheelRadius, Clock::getSeconds);
+    public AbstractChassis(EnumMap<WheelPosition, DriveModule> driveModules, double wheelbase, double trackWidth, double wheelRadius) {
+        this(driveModules, wheelbase, trackWidth, wheelRadius, Clock::getSeconds);
     }
+
+    protected abstract Kinematics makeKinematics(double wheelbase, double trackWidth);
 
     @Override
     public void periodic() {
@@ -101,8 +112,8 @@ public abstract class AbstractChassis<DriveModule > extends SubsystemBase implem
     }
 
     /**
-     * Perform any position calculations neccessary to account for
-     * movement since last upodate.
+     * Perform any position calculations necessary to account for
+     * movement since last update.
      * Called by {@link #periodic()}.
      */
     protected abstract void updatePosition();

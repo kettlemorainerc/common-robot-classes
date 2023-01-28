@@ -6,11 +6,11 @@
 package org.usfirst.frc.team2077.common.math;
 
 import org.usfirst.frc.team2077.common.drivetrain.DriveChassisIF;
-import org.usfirst.frc.team2077.common.drivetrain.MecanumMath.VelocityDirection;
+import org.usfirst.frc.team2077.common.VelocityDirection;
 
 import java.util.EnumMap;
 
-import static org.usfirst.frc.team2077.common.drivetrain.MecanumMath.VelocityDirection.*;
+import static org.usfirst.frc.team2077.common.VelocityDirection.*;
 import static org.usfirst.frc.team2077.common.math.AccelerationLimits.Type.*;
 
 /**

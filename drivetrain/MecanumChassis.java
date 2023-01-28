@@ -6,7 +6,6 @@
 package org.usfirst.frc.team2077.common.drivetrain;
 
 import org.usfirst.frc.team2077.common.*;
-import org.usfirst.frc.team2077.common.drivetrain.MecanumMath.*;
 import org.usfirst.frc.team2077.common.math.*;
 import org.usfirst.frc.team2077.common.sensor.*;
 import org.usfirst.frc.team2077.common.subsystem.CANLineSubsystem;
@@ -17,9 +16,9 @@ import java.util.Map.*;
 import java.util.function.*;
 
 import static java.util.stream.Collectors.*;
-import static org.usfirst.frc.team2077.common.drivetrain.MecanumMath.VelocityDirection.*;
+import static org.usfirst.frc.team2077.common.VelocityDirection.*;
 
-public class MecanumChassis extends AbstractChassis<DriveModuleIF> {
+public class MecanumChassis extends AbstractChassis<DriveModuleIF, MecanumMath> {
 	private static final double WHEELBASE = 20.375; // inches
 	private static final double TRACK_WIDTH = 25.5; // inches
 	private static final double WHEEL_RADIUS = 4.0; // inches
@@ -28,7 +27,7 @@ public class MecanumChassis extends AbstractChassis<DriveModuleIF> {
 	private final MecanumMath mecanumMath;
 	private final AngleSensor angleSensor;
 
-	private static EnumMap<WheelPosition, DriveModuleIF> buildDriveModule(RobotHardware<?, ?> hardware) {
+	private static EnumMap<WheelPosition, DriveModuleIF> buildDriveModule(HardwareRequirements<?, ?> hardware) {
 		EnumMap<WheelPosition, DriveModuleIF> driveModule = new EnumMap<>(WheelPosition.class);
 
 		for(WheelPosition pos : WheelPosition.values()) {
@@ -44,7 +43,7 @@ public class MecanumChassis extends AbstractChassis<DriveModuleIF> {
 		return driveModule;
 	}
 
-	public MecanumChassis(RobotHardware<?, MecanumChassis> hardware) {
+	public MecanumChassis(HardwareRequirements<?, MecanumChassis> hardware) {
 		this(hardware.getAngleSensor(), buildDriveModule(hardware), Clock::getSeconds);
 	}
 
@@ -55,14 +54,14 @@ public class MecanumChassis extends AbstractChassis<DriveModuleIF> {
 		mecanumMath = new MecanumMath(wheelbase, trackWidth, wheelRadius, wheelRadius, 1, 180 / Math.PI);
 
 		// north/south speed conversion from 0-1 range to DriveModule maximum (inches/second)
-		maximumSpeed = this.driveModule.values()
-									   .stream()
-									   .map(DriveModuleIF::getMaximumSpeed)
-									   .min(Comparator.naturalOrder())
-									   .orElseThrow();
+		maximumSpeed = this.driveModules.values()
+				 		 			    .stream()
+					 				    .map(DriveModuleIF::getMaximumSpeed)
+				 					    .min(Comparator.naturalOrder())
+									    .orElseThrow();
 
 		// rotation speed conversion from 0-1 range to DriveModule maximum (degrees/second)
-		maximumRotation = mecanumMath.forward(MecanumMath.mapOf(
+		maximumRotation = mecanumMath.velocityForTargets(MecanumMath.mapOf(
 			WheelPosition.class,
 			-maximumSpeed,
 			-maximumSpeed,
@@ -103,21 +102,28 @@ public class MecanumChassis extends AbstractChassis<DriveModuleIF> {
 	}
 
 	@Override
+	protected MecanumMath makeKinematics(double wheelbase, double trackWidth) {
+		return new MecanumMath(wheelbase, trackWidth, wheelRadius, wheelRadius, 1, 180 / Math.PI);
+	}
+
+	@Override
 	protected void updatePosition() {
 		// chassis velocity from internal set point
 		velocitySet = getVelocityCalculated();
 
 		// chassis velocity from motor/wheel measurements
-		EnumMap<WheelPosition, Double> wheelVelocities = driveModule.entrySet()
-																	.stream()
-																	.map(e -> new SimpleEntry<>(e.getKey(), e.getValue().getVelocity()))
-																	.collect(toMap(
-						Entry::getKey,
-						Entry::getValue,
-						Math::min,
-						() -> new EnumMap<>(WheelPosition.class)
-				));
-		velocityMeasured = mecanumMath.forward(wheelVelocities);
+		EnumMap<WheelPosition, Double> wheelVelocities = (
+				driveModules.entrySet()
+						.stream()
+						.map(e -> new SimpleEntry<>(e.getKey(), e.getValue().getVelocity()))
+						.collect(toMap(
+								Entry::getKey,
+								Entry::getValue,
+								Math::min,
+								() -> new EnumMap<>(WheelPosition.class)
+						))
+		);
+		velocityMeasured = mecanumMath.velocityForTargets(wheelVelocities);
 
 		// TODO: E/W velocities are consistently lower than those calculated from wheel speeds.
 		// TODO: Measure actual vs measured E/W distances and insert an adjustment factor here.
@@ -150,18 +156,20 @@ public class MecanumChassis extends AbstractChassis<DriveModuleIF> {
 		EnumMap<VelocityDirection, Double> botVelocity = getVelocityCalculated();
 
 		// compute motor speeds
-		EnumMap<WheelPosition, Double> wheelSpeed = mecanumMath.inverse(botVelocity);
+		EnumMap<WheelPosition, Double> wheelSpeed = mecanumMath.targetsForVelocity(botVelocity);
 
 		// scale all motors proportionally if any are out of range
-		double max = wheelSpeed.values()
-				.stream()
-				.map(vel -> Math.abs(vel) / maximumSpeed)
-				.max(Comparator.naturalOrder())
-				.map(val -> Math.max(1, val))
-				.orElseThrow();
+		double max = (
+				wheelSpeed.values()
+						  .stream()
+						  .map(vel -> Math.abs(vel) / maximumSpeed)
+						  .max(Comparator.naturalOrder())
+						  .map(val -> Math.max(1, val))
+						  .orElseThrow()
+		);
 
 		for (WheelPosition position : WheelPosition.values()) {
-			driveModule.get(position).setVelocity(
+			driveModules.get(position).setVelocity(
 					wheelSpeed.get(position) / max
 			);
 		}
@@ -180,7 +188,7 @@ public class MecanumChassis extends AbstractChassis<DriveModuleIF> {
 			velocity,
 			velocitySet,
 			velocityMeasured,
-			driveModule,
+			driveModules,
 			positionSet,
 			positionMeasured
 		);
