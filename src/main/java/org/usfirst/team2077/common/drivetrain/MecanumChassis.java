@@ -5,10 +5,12 @@
 
 package org.usfirst.frc.team2077.common.drivetrain;
 
-import org.usfirst.frc.team2077.common.*;
 import org.usfirst.frc.team2077.common.drivetrain.MecanumMath.*;
 import org.usfirst.frc.team2077.common.math.*;
 import org.usfirst.frc.team2077.common.sensor.*;
+import org.usfirst.team2077.common.Clock;
+import org.usfirst.team2077.common.RobotHardware;
+import org.usfirst.team2077.common.WheelPosition;
 import org.usfirst.frc.team2077.common.subsystem.CANLineSubsystem;
 
 import java.util.AbstractMap.*;

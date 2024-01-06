@@ -1,4 +1,4 @@
-package org.usfirst.frc.team2077.common;
+package org.usfirst.team2077.common;
 
 public enum WheelPosition {
     FRONT_RIGHT,

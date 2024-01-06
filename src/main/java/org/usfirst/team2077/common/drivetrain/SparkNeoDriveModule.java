@@ -2,7 +2,7 @@
 package org.usfirst.frc.team2077.common.drivetrain;
 
 import com.revrobotics.*;
-import org.usfirst.frc.team2077.common.WheelPosition;
+import org.usfirst.team2077.common.WheelPosition;
 
 public class SparkNeoDriveModule extends CANSparkMax implements DriveModuleIF {
     private static final double WHEEL_GEAR_RATIO = 10.714, WHEEL_RADIUS = 4;

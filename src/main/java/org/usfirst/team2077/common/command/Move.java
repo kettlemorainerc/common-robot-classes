@@ -6,11 +6,11 @@
 package org.usfirst.frc.team2077.common.command;
 
 import edu.wpi.first.wpilibj2.command.*;
-import org.usfirst.frc.team2077.common.*;
 import org.usfirst.frc.team2077.common.drivetrain.*;
 import org.usfirst.frc.team2077.common.drivetrain.MecanumMath.*;
 import org.usfirst.frc.team2077.common.math.*;
 import org.usfirst.frc.team2077.common.math.AccelerationLimits.*;
+import org.usfirst.team2077.common.RobotHardware;
 
 import java.util.*;
 
