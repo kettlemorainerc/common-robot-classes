@@ -1,10 +1,10 @@
 package org.usfirst.frc.team2077.common.math;
 
-import org.usfirst.team2077.common.WheelPosition;
+import org.usfirst.frc.team2077.common.WheelPosition;
 import org.usfirst.frc.team2077.common.drivetrain.*;
 
 import static org.usfirst.frc.team2077.common.drivetrain.MecanumMath.VelocityDirection.*;
-import static org.usfirst.team2077.common.WheelPosition.*;
+import static org.usfirst.frc.team2077.common.WheelPosition.*;
 
 public class Point {
     public final double north, east;

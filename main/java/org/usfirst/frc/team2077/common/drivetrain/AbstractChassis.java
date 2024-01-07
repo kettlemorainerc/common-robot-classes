@@ -5,8 +5,8 @@
 
 package org.usfirst.frc.team2077.common.drivetrain;
 
-import org.usfirst.team2077.common.Clock;
-import org.usfirst.team2077.common.WheelPosition;
+import org.usfirst.frc.team2077.common.Clock;
+import org.usfirst.frc.team2077.common.WheelPosition;
 import org.usfirst.frc.team2077.common.drivetrain.MecanumMath.*;
 import org.usfirst.frc.team2077.common.math.*;
 

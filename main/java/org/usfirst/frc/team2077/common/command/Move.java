@@ -10,7 +10,7 @@ import org.usfirst.frc.team2077.common.drivetrain.*;
 import org.usfirst.frc.team2077.common.drivetrain.MecanumMath.*;
 import org.usfirst.frc.team2077.common.math.*;
 import org.usfirst.frc.team2077.common.math.AccelerationLimits.*;
-import org.usfirst.team2077.common.RobotHardware;
+import org.usfirst.frc.team2077.common.RobotHardware;
 
 import java.util.*;
 

@@ -3,7 +3,7 @@
 /* Open Source Software - may be modified and shared by FRC teams.            */
 /*----------------------------------------------------------------------------*/
 
-package org.usfirst.team2077.common;
+package org.usfirst.frc.team2077.common;
 
 import edu.wpi.first.wpilibj.*;
 

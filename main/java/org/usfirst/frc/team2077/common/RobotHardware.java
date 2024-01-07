@@ -1,4 +1,4 @@
-package org.usfirst.team2077.common;
+package org.usfirst.frc.team2077.common;
 
 import com.kauailabs.navx.frc.*;
 import edu.wpi.first.wpilibj2.command.*;

@@ -6,7 +6,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import com.kauailabs.navx.frc.AHRS;
 
-import org.usfirst.team2077.common.RobotHardware;
+import org.usfirst.frc.team2077.common.RobotHardware;
 
 public class AngleSensor {
 	// these fields are private to the timer thread

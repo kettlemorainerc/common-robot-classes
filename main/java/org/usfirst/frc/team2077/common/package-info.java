@@ -12,4 +12,4 @@
  * <code>git clone https://github.com/kettlemorainerc/common-code.git --recurse-submodules</code>. Most likely with
  * a different url
  */
-package org.usfirst.team2077.common;
+package org.usfirst.frc.team2077.common;
