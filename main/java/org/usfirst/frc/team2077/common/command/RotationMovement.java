@@ -5,7 +5,7 @@ import org.usfirst.frc.team2077.common.drivetrain.*;
 import org.usfirst.frc.team2077.common.DriveStick;
 import org.usfirst.frc.team2077.common.RobotHardware;
 
-public class RotationMovement extends CommandBase {
+public class RotationMovement extends Command {
     protected final DriveStick stick;
     protected final DriveChassisIF chassis;
 

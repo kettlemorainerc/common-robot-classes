@@ -5,7 +5,7 @@
 
 package org.usfirst.frc.team2077.common.drivetrain;
 
-import org.usfirst.frc.team2077.common.drivetrain.MecanumMath.*;
+import org.usfirst.frc.team2077.common.VelocityDirection;
 import org.usfirst.frc.team2077.common.math.*;
 import org.usfirst.frc.team2077.common.sensor.*;
 import org.usfirst.frc.team2077.common.Clock;
@@ -19,7 +19,7 @@ import java.util.Map.*;
 import java.util.function.*;
 
 import static java.util.stream.Collectors.*;
-import static org.usfirst.frc.team2077.common.drivetrain.MecanumMath.VelocityDirection.*;
+import static org.usfirst.frc.team2077.common.VelocityDirection.*;
 
 public class MecanumChassis extends AbstractChassis<DriveModuleIF> {
 	private static final double WHEELBASE = 20.375; // inches
@@ -57,7 +57,7 @@ public class MecanumChassis extends AbstractChassis<DriveModuleIF> {
 		mecanumMath = new MecanumMath(wheelbase, trackWidth, wheelRadius, wheelRadius, 1, 180 / Math.PI);
 
 		// north/south speed conversion from 0-1 range to DriveModule maximum (inches/second)
-		maximumSpeed = this.driveModule.values()
+		maximumSpeed = this.driveModules.values()
 									   .stream()
 									   .map(DriveModuleIF::getMaximumSpeed)
 									   .min(Comparator.naturalOrder())
@@ -87,11 +87,11 @@ public class MecanumChassis extends AbstractChassis<DriveModuleIF> {
 
 	@Override
 	public void setVelocity(double north, double east, AccelerationLimits accelerationLimits) {
-		targetVelocity.put(NORTH, north);
-		this.accelerationLimits.set(NORTH, accelerationLimits.get(NORTH));
+		targetVelocity.put(FORWARD, north);
+		this.accelerationLimits.set(FORWARD, accelerationLimits.get(FORWARD));
 
-		targetVelocity.put(EAST, east);
-		this.accelerationLimits.set(EAST, accelerationLimits.get(EAST));
+		targetVelocity.put(STRAFE, east);
+		this.accelerationLimits.set(STRAFE, accelerationLimits.get(STRAFE));
 	}
 
 	@Override
@@ -110,7 +110,7 @@ public class MecanumChassis extends AbstractChassis<DriveModuleIF> {
 		velocitySet = getVelocityCalculated();
 
 		// chassis velocity from motor/wheel measurements
-		EnumMap<WheelPosition, Double> wheelVelocities = driveModule.entrySet()
+		EnumMap<WheelPosition, Double> wheelVelocities = driveModules.entrySet()
 																	.stream()
 																	.map(e -> new SimpleEntry<>(e.getKey(), e.getValue().getVelocity()))
 																	.collect(toMap(
@@ -124,18 +124,18 @@ public class MecanumChassis extends AbstractChassis<DriveModuleIF> {
 		// TODO: E/W velocities are consistently lower than those calculated from wheel speeds.
 		// TODO: Measure actual vs measured E/W distances and insert an adjustment factor here.
 		// TODO: Put the adjustment factor in constants.
-		velocitySet.compute(EAST, (k, v) -> v * EAST_ADJUSTMENT); // just a guess
-		velocityMeasured.compute(EAST, (k, v) -> v * EAST_ADJUSTMENT); // just a guess
+		velocitySet.compute(STRAFE, (k, v) -> v * EAST_ADJUSTMENT); // just a guess
+		velocityMeasured.compute(STRAFE, (k, v) -> v * EAST_ADJUSTMENT); // just a guess
 
 		// update position with motion since last update
 		positionSet.moveRelative(
-			velocitySet.get(NORTH) * timeSinceLastUpdate,
-			velocitySet.get(EAST) * timeSinceLastUpdate,
+			velocitySet.get(FORWARD) * timeSinceLastUpdate,
+			velocitySet.get(STRAFE) * timeSinceLastUpdate,
 			velocitySet.get(ROTATION) * timeSinceLastUpdate
 		);
 		positionMeasured.moveRelative(
-			velocityMeasured.get(NORTH) * timeSinceLastUpdate,
-			velocityMeasured.get(EAST) * timeSinceLastUpdate,
+			velocityMeasured.get(FORWARD) * timeSinceLastUpdate,
+			velocityMeasured.get(STRAFE) * timeSinceLastUpdate,
 			velocityMeasured.get(ROTATION) * timeSinceLastUpdate
 		);
 		if(angleSensor != null) { // TODO: Confirm AngleSensor is actually reading. Handle bench testing.
@@ -163,7 +163,7 @@ public class MecanumChassis extends AbstractChassis<DriveModuleIF> {
 				.orElseThrow();
 
 		for (WheelPosition position : WheelPosition.values()) {
-			driveModule.get(position).setVelocity(
+			driveModules.get(position).setVelocity(
 					wheelSpeed.get(position) / max
 			);
 		}
@@ -182,7 +182,7 @@ public class MecanumChassis extends AbstractChassis<DriveModuleIF> {
 			velocity,
 			velocitySet,
 			velocityMeasured,
-			driveModule,
+                driveModules,
 			positionSet,
 			positionMeasured
 		);

@@ -6,8 +6,8 @@
 package org.usfirst.frc.team2077.common.command;
 
 import edu.wpi.first.wpilibj2.command.*;
+import org.usfirst.frc.team2077.common.VelocityDirection;
 import org.usfirst.frc.team2077.common.drivetrain.*;
-import org.usfirst.frc.team2077.common.drivetrain.MecanumMath.*;
 import org.usfirst.frc.team2077.common.math.*;
 import org.usfirst.frc.team2077.common.math.AccelerationLimits.*;
 import org.usfirst.frc.team2077.common.RobotHardware;
@@ -60,8 +60,8 @@ public class Move extends CommandBase {
 
 		// scale factors for north/east/rotation by fraction of maximum velocity
 		double[] scale = {
-			Math.abs(distanceTotal[0]) / max.get(VelocityDirection.NORTH),
-			Math.abs(distanceTotal[1]) / max.get(VelocityDirection.EAST),
+			Math.abs(distanceTotal[0]) / max.get(VelocityDirection.FORWARD),
+			Math.abs(distanceTotal[1]) / max.get(VelocityDirection.STRAFE),
 			Math.abs(distanceTotal[2]) / max.get(VelocityDirection.ROTATION)
 		};
 		double maxScale = Math.max(scale[0], Math.max(scale[1], scale[2]));

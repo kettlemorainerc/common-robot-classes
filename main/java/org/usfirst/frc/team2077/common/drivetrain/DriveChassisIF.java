@@ -6,7 +6,7 @@
 package org.usfirst.frc.team2077.common.drivetrain;
 
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import org.usfirst.frc.team2077.common.drivetrain.MecanumMath.VelocityDirection;
+import org.usfirst.frc.team2077.common.VelocityDirection;
 import org.usfirst.frc.team2077.common.math.AccelerationLimits;
 
 import java.util.EnumMap;

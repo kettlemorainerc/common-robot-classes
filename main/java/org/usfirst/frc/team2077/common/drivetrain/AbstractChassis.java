@@ -6,8 +6,8 @@
 package org.usfirst.frc.team2077.common.drivetrain;
 
 import org.usfirst.frc.team2077.common.Clock;
+import org.usfirst.frc.team2077.common.VelocityDirection;
 import org.usfirst.frc.team2077.common.WheelPosition;
-import org.usfirst.frc.team2077.common.drivetrain.MecanumMath.*;
 import org.usfirst.frc.team2077.common.math.*;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -16,7 +16,7 @@ import org.usfirst.frc.team2077.common.math.AccelerationLimits.*;
 import java.util.*;
 import java.util.function.*;
 
-import static org.usfirst.frc.team2077.common.drivetrain.MecanumMath.VelocityDirection.*;
+import static org.usfirst.frc.team2077.common.VelocityDirection.*;
 
 public abstract class AbstractChassis<DriveModule> extends SubsystemBase implements DriveChassisIF {
 
@@ -26,7 +26,7 @@ public abstract class AbstractChassis<DriveModule> extends SubsystemBase impleme
         return newMap;
     }
 
-    public final EnumMap<WheelPosition, DriveModule> driveModule;
+    public final EnumMap<WheelPosition, DriveModule> driveModules;
     protected final double wheelbase;
     protected final double trackWidth;
     protected final double wheelRadius;
@@ -60,16 +60,16 @@ public abstract class AbstractChassis<DriveModule> extends SubsystemBase impleme
 //    private long debugCounter_ = 0; // internal counter
 //    public boolean debug_ = false;
 
-    public AbstractChassis(EnumMap<WheelPosition, DriveModule> driveModule, double wheelbase, double trackWidth, double wheelRadius, Supplier<Double> getSeconds) {
-        this.driveModule = driveModule;
+    public AbstractChassis(EnumMap<WheelPosition, DriveModule> driveModules, double wheelbase, double trackWidth, double wheelRadius, Supplier<Double> getSeconds) {
+        this.driveModules = driveModules;
         this.wheelbase = wheelbase;
         this.trackWidth = trackWidth;
         this.wheelRadius = wheelRadius;
         this.getSeconds = getSeconds;
     }
 
-    public AbstractChassis(EnumMap<WheelPosition, DriveModule> driveModule, double wheelbase, double trackWidth, double wheelRadius) {
-        this(driveModule, wheelbase, trackWidth, wheelRadius, Clock::getSeconds);
+    public AbstractChassis(EnumMap<WheelPosition, DriveModule> driveModules, double wheelbase, double trackWidth, double wheelRadius) {
+        this(driveModules, wheelbase, trackWidth, wheelRadius, Clock::getSeconds);
     }
 
     @Override
@@ -79,8 +79,8 @@ public abstract class AbstractChassis<DriveModule> extends SubsystemBase impleme
         lastUpdateTime = now;
 
         updatePosition();
-        limitVelocity(NORTH, maximumSpeed);
-        limitVelocity(EAST, maximumSpeed);
+        limitVelocity(FORWARD, maximumSpeed);
+        limitVelocity(STRAFE, maximumSpeed);
         limitVelocity(ROTATION, maximumRotation);
         updateDriveModules();
     }
@@ -132,8 +132,8 @@ public abstract class AbstractChassis<DriveModule> extends SubsystemBase impleme
     public EnumMap<VelocityDirection, Double> getMaximumVelocity() {
         EnumMap<VelocityDirection, Double> stuff = new EnumMap<>(VelocityDirection.class);
 
-        stuff.put(NORTH, maximumSpeed);
-        stuff.put(EAST, maximumSpeed);
+        stuff.put(FORWARD, maximumSpeed);
+        stuff.put(STRAFE, maximumSpeed);
         stuff.put(ROTATION, maximumRotation);
 
         return stuff;
@@ -143,8 +143,8 @@ public abstract class AbstractChassis<DriveModule> extends SubsystemBase impleme
     public EnumMap<VelocityDirection, Double> getMinimumVelocity() {
         EnumMap<VelocityDirection, Double> stuff = new EnumMap<>(VelocityDirection.class);
 
-        stuff.put(NORTH, minimumSpeed);
-        stuff.put(EAST, minimumSpeed);
+        stuff.put(FORWARD, minimumSpeed);
+        stuff.put(STRAFE, minimumSpeed);
         stuff.put(ROTATION, minimumRotation);
 
         return stuff;
@@ -207,13 +207,13 @@ public abstract class AbstractChassis<DriveModule> extends SubsystemBase impleme
     @Override
     public final void setVelocityPercent(double north, double east, double clockwise) {
         EnumMap<VelocityDirection, Double> max = getMaximumVelocity();
-        setVelocity(north * max.get(NORTH), east * max.get(EAST), clockwise * max.get(ROTATION));
+        setVelocity(north * max.get(FORWARD), east * max.get(STRAFE), clockwise * max.get(ROTATION));
     }
 
     @Override
     public final void setVelocityPercent(double north, double east) {
         EnumMap<VelocityDirection, Double> max = getMaximumVelocity();
-        setVelocity(north * max.get(NORTH), east * max.get(EAST));
+        setVelocity(north * max.get(FORWARD), east * max.get(STRAFE));
     }
 
     @Override

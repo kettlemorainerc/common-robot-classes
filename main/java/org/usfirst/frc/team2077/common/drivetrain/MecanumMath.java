@@ -1,11 +1,12 @@
 package org.usfirst.frc.team2077.common.drivetrain;
 
+import org.usfirst.frc.team2077.common.VelocityDirection;
 import org.usfirst.frc.team2077.common.WheelPosition;
 import org.usfirst.frc.team2077.common.math.*;
 
 import java.util.*;
 
-import static org.usfirst.frc.team2077.common.drivetrain.MecanumMath.VelocityDirection.*;
+import static org.usfirst.frc.team2077.common.VelocityDirection.*;
 
 /***
  * An implementation of the mecanum drivetrain inverse and forward kinematics described in
@@ -153,12 +154,6 @@ public final class MecanumMath {
 		}
 
 		return ret;
-	}
-
-	public enum VelocityDirection {
-		NORTH,
-		EAST,
-		ROTATION,
 	}
 
 	/**
@@ -341,8 +336,8 @@ public final class MecanumMath {
 			}
 		}
 
-		translation.compute(NORTH, (k, v) -> toUserRobotSpeed(v));
-		translation.compute(EAST, (k, v) -> toUserRobotSpeed(v));
+		translation.compute(FORWARD, (k, v) -> toUserRobotSpeed(v));
+		translation.compute(STRAFE, (k, v) -> toUserRobotSpeed(v));
 		translation.compute(ROTATION, (k, v) -> toUserRotationSpeed(v));
 
 		return translation;

@@ -41,12 +41,8 @@ public abstract class CANLineSubsystem<T> implements Subsystem {
     }
 
     public static final class SparkNeo extends CANLineSubsystem<SparkNeoDriveModule> {
-        public SparkNeo(SparkNeoDriveModule.DrivePosition position) {
-            super(new SparkNeoDriveModule(position), position.ID);
-        }
-
-        public SparkNeo(WheelPosition position) {
-            this(SparkNeoDriveModule.DrivePosition.forWheelPosition(position));
+        public SparkNeo(DrivePosition position) {
+            super(new SparkNeoDriveModule(position), position.motorId());
         }
 
         @Override public void setRPM(double RPM) {

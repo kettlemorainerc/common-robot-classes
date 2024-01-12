@@ -20,7 +20,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 public abstract class SelfDefinedCommand extends BindableCommand {
 
     @Override public void bind(JoystickButton button){
-        button.whenPressed(this);
+        button.onTrue(this);
     }
 
     /**

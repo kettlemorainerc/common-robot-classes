@@ -5,11 +5,12 @@
 
 package org.usfirst.frc.team2077.common.math;
 
-import org.usfirst.frc.team2077.common.drivetrain.MecanumMath.VelocityDirection;
+import org.usfirst.frc.team2077.common.VelocityDirection;
 
 import java.util.EnumMap;
+import java.util.Map;
 
-import static org.usfirst.frc.team2077.common.drivetrain.MecanumMath.VelocityDirection.*;
+import static org.usfirst.frc.team2077.common.VelocityDirection.*;
 
 public class Position extends EnumMap<VelocityDirection, Double> {
 
@@ -18,19 +19,19 @@ public class Position extends EnumMap<VelocityDirection, Double> {
     }
 
     public Position(Position from) {
-        this(new double[]{from.get(NORTH), from.get(EAST), from.get(ROTATION)});
+        this(new double[]{from.get(FORWARD), from.get(STRAFE), from.get(ROTATION)});
     }
 
     public Position(double[] position) {
         super(VelocityDirection.class);
-        put(NORTH, position[NORTH.ordinal()]);
-        put(EAST, position[EAST.ordinal()]);
+        put(FORWARD, position[FORWARD.ordinal()]);
+        put(STRAFE, position[STRAFE.ordinal()]);
         put(ROTATION, position[ROTATION.ordinal()]);
     }
 
     public void moveAbsolute(double north, double east, double rotation) {
-        compute(NORTH, (k, val) -> val + north);
-        compute(EAST, (k, v) -> v + east);
+        compute(FORWARD, (k, val) -> val + north);
+        compute(STRAFE, (k, v) -> v + east);
         compute(ROTATION, (k, v) -> v + rotation);
     }
 
@@ -50,11 +51,19 @@ public class Position extends EnumMap<VelocityDirection, Double> {
         moveAbsolute(distance * Math.cos(direction), distance * Math.sin(direction), rotation);
     }
 
+    public void moveRelative(Map<VelocityDirection, Double> velocities, double changeInTime) {
+        moveRelative(
+                velocities.get(FORWARD) * changeInTime,
+                velocities.get(STRAFE) * changeInTime,
+                velocities.get(ROTATION) * changeInTime
+        );
+    }
+
     public EnumMap<VelocityDirection, Double> distanceAbsolute(Position origin) {
         EnumMap<VelocityDirection, Double> distanceTo = this.clone();
 
-        distanceTo.compute(NORTH, (k, v) -> v - origin.getOrDefault(NORTH, 0d));
-        distanceTo.compute(EAST, (k, v) -> v - origin.getOrDefault(EAST, 0d));
+        distanceTo.compute(FORWARD, (k, v) -> v - origin.getOrDefault(FORWARD, 0d));
+        distanceTo.compute(STRAFE, (k, v) -> v - origin.getOrDefault(STRAFE, 0d));
         distanceTo.compute(ROTATION, (k, v) -> v - origin.getOrDefault(ROTATION, 0d));
         
         return distanceTo;
@@ -64,8 +73,8 @@ public class Position extends EnumMap<VelocityDirection, Double> {
     public EnumMap<VelocityDirection, Double> distanceRelative(Position origin) {
         EnumMap<VelocityDirection, Double> absolute = distanceAbsolute(origin);
         double rotation = absolute.get(ROTATION);
-        double distance = Math.sqrt(absolute.get(NORTH)*absolute.get(NORTH) + absolute.get(EAST)*absolute.get(EAST)); // straight line
-        double direction = Math.atan2(absolute.get(EAST), absolute.get(NORTH)) - Math.toRadians(origin.get(ROTATION));
+        double distance = Math.sqrt(absolute.get(FORWARD)*absolute.get(FORWARD) + absolute.get(STRAFE)*absolute.get(STRAFE)); // straight line
+        double direction = Math.atan2(absolute.get(STRAFE), absolute.get(FORWARD)) - Math.toRadians(origin.get(ROTATION));
         double directionCurve = 0;
         if ( distance != 0 && rotation != 0) {
             double radians = Math.toRadians(rotation);
@@ -79,16 +88,16 @@ public class Position extends EnumMap<VelocityDirection, Double> {
 
         EnumMap<VelocityDirection, Double> distanceTo = new EnumMap<>(VelocityDirection.class);
 
-        distanceTo.put(NORTH, distance * Math.cos(directionStraight));
-        distanceTo.put(EAST, distance * Math.cos(directionStraight));
+        distanceTo.put(FORWARD, distance * Math.cos(directionStraight));
+        distanceTo.put(STRAFE, distance * Math.cos(directionStraight));
         distanceTo.put(ROTATION, rotation);
 
         return distanceTo;
     }
 
     public void set(double north, double east, double heading) {
-        put(NORTH, north);
-        put(EAST, east);
+        put(FORWARD, north);
+        put(STRAFE, east);
         setHeading(heading);
     }
 
@@ -97,7 +106,7 @@ public class Position extends EnumMap<VelocityDirection, Double> {
     }
 
     public double[] get() {
-        return new double[] {get(NORTH), get(EAST), get(ROTATION)};
+        return new double[] {get(FORWARD), get(STRAFE), get(ROTATION)};
     }
 
     public Position copy() {
@@ -106,7 +115,7 @@ public class Position extends EnumMap<VelocityDirection, Double> {
 
     @Override
     public String toString() {
-        return "N:" + Math.round(get(NORTH)*10.)/10. + "in E:" + Math.round(get(EAST)*10.)/10. + "in A:" + Math.round(get(ROTATION) * 10.) / 10. + "deg";
+        return "N:" + Math.round(get(FORWARD)*10.)/10. + "in E:" + Math.round(get(STRAFE)*10.)/10. + "in A:" + Math.round(get(ROTATION) * 10.) / 10. + "deg";
     }
 
     private static String toString(double[] doubleArray) {

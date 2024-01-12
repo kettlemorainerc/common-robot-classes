@@ -6,11 +6,11 @@
 package org.usfirst.frc.team2077.common.math;
 
 import org.usfirst.frc.team2077.common.drivetrain.DriveChassisIF;
-import org.usfirst.frc.team2077.common.drivetrain.MecanumMath.VelocityDirection;
+import org.usfirst.frc.team2077.common.VelocityDirection;
 
 import java.util.EnumMap;
 
-import static org.usfirst.frc.team2077.common.drivetrain.MecanumMath.VelocityDirection.*;
+import static org.usfirst.frc.team2077.common.VelocityDirection.*;
 import static org.usfirst.frc.team2077.common.math.AccelerationLimits.Type.*;
 
 /**
@@ -49,12 +49,12 @@ public class AccelerationLimits {
     public AccelerationLimits(boolean calculateRotation, double accelerationG, double decelerationG, DriveChassisIF chassis, double[] scale) {
         this.defaultChassis = chassis;
 
-        put(NORTH, accelerationG, decelerationG, scale[NORTH.ordinal()]);
-        put(EAST, accelerationG, decelerationG, scale[EAST.ordinal()]);
+        put(FORWARD, accelerationG, decelerationG, scale[FORWARD.ordinal()]);
+        put(STRAFE, accelerationG, decelerationG, scale[STRAFE.ordinal()]);
 
         if(calculateRotation) {
             EnumMap<VelocityDirection, Double> max = chassis.getMaximumVelocity();
-            double inchesToDegrees = max.get(ROTATION) / max.get(NORTH);
+            double inchesToDegrees = max.get(ROTATION) / max.get(FORWARD);
 
             put(ROTATION, inchesToDegrees * accelerationG, inchesToDegrees * decelerationG, scale[ROTATION.ordinal()]);
         } else {
@@ -63,8 +63,8 @@ public class AccelerationLimits {
     }
 
     public AccelerationLimits(double[][] doubles, DriveChassisIF chassis) {
-        set(NORTH, doubles[NORTH.ordinal()]);
-        set(EAST, doubles[EAST.ordinal()]);
+        set(FORWARD, doubles[FORWARD.ordinal()]);
+        set(STRAFE, doubles[STRAFE.ordinal()]);
         set(ROTATION, doubles[ROTATION.ordinal()]);
 
         defaultChassis = chassis;
@@ -93,8 +93,8 @@ public class AccelerationLimits {
             int accel = ACCELERATION.ordinal();
             int decel = DECELERATION.ordinal();
 
-            adjustedLimits[accel] = limits[accel] > 0 ? limits[accel] : LIMITS.get(ACCELERATION, NORTH) * max.get(ROTATION) / max.get(NORTH);
-            adjustedLimits[decel] = limits[decel] > 0 ? limits[decel] : LIMITS.get(DECELERATION, NORTH) * max.get(ROTATION) / max.get(NORTH);
+            adjustedLimits[accel] = limits[accel] > 0 ? limits[accel] : LIMITS.get(ACCELERATION, FORWARD) * max.get(ROTATION) / max.get(FORWARD);
+            adjustedLimits[decel] = limits[decel] > 0 ? limits[decel] : LIMITS.get(DECELERATION, FORWARD) * max.get(ROTATION) / max.get(FORWARD);
 
             return adjustedLimits;
         }
@@ -107,8 +107,8 @@ public class AccelerationLimits {
 
     public double[][] getAdjusted(DriveChassisIF chassis) {
         return new double[][] {
-            get(NORTH, chassis),
-            get(EAST, chassis),
+            get(FORWARD, chassis),
+            get(STRAFE, chassis),
             get(ROTATION, chassis)
         };
     }
