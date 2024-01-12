@@ -9,7 +9,7 @@ import org.usfirst.frc.team2077.common.VelocityDirection;
 import org.usfirst.frc.team2077.common.math.*;
 import org.usfirst.frc.team2077.common.sensor.*;
 import org.usfirst.frc.team2077.common.Clock;
-import org.usfirst.frc.team2077.common.RobotHardware;
+import org.usfirst.frc.team2077.common.HardwareRequirements;
 import org.usfirst.frc.team2077.common.WheelPosition;
 import org.usfirst.frc.team2077.common.subsystem.CANLineSubsystem;
 
@@ -30,7 +30,7 @@ public class MecanumChassis extends AbstractChassis<DriveModuleIF> {
 	private final MecanumMath mecanumMath;
 	private final AngleSensor angleSensor;
 
-	private static EnumMap<WheelPosition, DriveModuleIF> buildDriveModule(RobotHardware<?, ?> hardware) {
+	private static EnumMap<WheelPosition, DriveModuleIF> buildDriveModule(HardwareRequirements<?, ?> hardware) {
 		EnumMap<WheelPosition, DriveModuleIF> driveModule = new EnumMap<>(WheelPosition.class);
 
 		for(WheelPosition pos : WheelPosition.values()) {
@@ -46,7 +46,7 @@ public class MecanumChassis extends AbstractChassis<DriveModuleIF> {
 		return driveModule;
 	}
 
-	public MecanumChassis(RobotHardware<?, MecanumChassis> hardware) {
+	public MecanumChassis(HardwareRequirements<?, MecanumChassis> hardware) {
 		this(hardware.getAngleSensor(), buildDriveModule(hardware), Clock::getSeconds);
 	}
 

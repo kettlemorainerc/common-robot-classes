@@ -10,11 +10,11 @@ import org.usfirst.frc.team2077.common.VelocityDirection;
 import org.usfirst.frc.team2077.common.drivetrain.*;
 import org.usfirst.frc.team2077.common.math.*;
 import org.usfirst.frc.team2077.common.math.AccelerationLimits.*;
-import org.usfirst.frc.team2077.common.RobotHardware;
+import org.usfirst.frc.team2077.common.HardwareRequirements;
 
 import java.util.*;
 
-public class Move extends CommandBase {
+public class Move extends Command {
 	public static final double ACCELERATION_G_LIMIT = .1;
 	public static final double DECELERATION_G_LIMIT = .3;
 	private final AbstractChassis chassis;
@@ -30,19 +30,19 @@ public class Move extends CommandBase {
 
 	private Position origin;
 
-	public Move(RobotHardware<?, ?> hardware, double north, double east, double rotation) {
+	public Move(HardwareRequirements<?, ?> hardware, double north, double east, double rotation) {
 		this(hardware, north, east, rotation, 3, hardware.getPosition(), hardware.getHeading());
 	}
 
-	public Move(RobotHardware<?, ?> hardware, double north, double east) {
+	public Move(HardwareRequirements<?, ?> hardware, double north, double east) {
 		this(hardware, north, east, 0, 2, hardware.getPosition());
 	}
 
-	public Move(RobotHardware<?, ?> hardware, double rotation) {
+	public Move(HardwareRequirements<?, ?> hardware, double rotation) {
 		this(hardware, 0, 0, rotation, 1, hardware.getHeading());
 	}
 
-	private Move(RobotHardware<?, ?> hardware, double north, double east, double rotation, int method, Subsystem... requirements) {
+	private Move(HardwareRequirements<?, ?> hardware, double north, double east, double rotation, int method, Subsystem... requirements) {
 		addRequirements(requirements);
 		this.chassis = hardware.getChassis();
 
