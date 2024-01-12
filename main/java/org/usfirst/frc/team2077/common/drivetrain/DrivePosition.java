@@ -14,5 +14,5 @@ public interface DrivePosition {
     double I();
     double D();
 
-    WheelPosition position();
+    WheelPosition getWheelPosition();
 }

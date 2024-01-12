@@ -3,7 +3,6 @@ package org.usfirst.frc.team2077.common.subsystem;
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.*;
 import edu.wpi.first.wpilibj2.command.*;
-import org.usfirst.frc.team2077.common.WheelPosition;
 import org.usfirst.frc.team2077.common.drivetrain.*;
 
 /**

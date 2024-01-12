@@ -6,11 +6,11 @@
 package org.usfirst.frc.team2077.common.drivetrain;
 
 import org.usfirst.frc.team2077.common.VelocityDirection;
+import org.usfirst.frc.team2077.common.WheelPosition;
 import org.usfirst.frc.team2077.common.math.*;
 import org.usfirst.frc.team2077.common.sensor.*;
 import org.usfirst.frc.team2077.common.Clock;
 import org.usfirst.frc.team2077.common.HardwareRequirements;
-import org.usfirst.frc.team2077.common.WheelPosition;
 import org.usfirst.frc.team2077.common.subsystem.CANLineSubsystem;
 
 import java.util.AbstractMap.*;

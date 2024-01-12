@@ -7,6 +7,8 @@ import org.usfirst.frc.team2077.common.math.*;
 import java.util.*;
 
 import static org.usfirst.frc.team2077.common.VelocityDirection.*;
+import static org.usfirst.frc.team2077.common.WheelPosition.*;
+import static org.usfirst.frc.team2077.common.WheelPosition.BACK_LEFT;
 
 /***
  * An implementation of the mecanum drivetrain inverse and forward kinematics described in
@@ -15,7 +17,6 @@ import static org.usfirst.frc.team2077.common.VelocityDirection.*;
  * <style>
  *     #terms table { padding: .25rem; border: 1px solid black; border-collapse: collapse; }
  *     #terms td { padding: .25rem; border: 1px solid black; text-align: center; }
- *
  *     #terms dt { border-bottom: 2px solid black; font-size: 1.2em; }
  *     #terms dd { margin: 0; padding: .5em 1em .5em 1.5em; border-left: 2px solid black; }
  *     #terms blockquote { margin: 0; }
@@ -106,7 +107,7 @@ import static org.usfirst.frc.team2077.common.VelocityDirection.*;
  *  <dd><p style="margin-left: 40px">Implements the inverse kinematic equation <b>[&Omega;] = (1/r)[R][V]</b>,
  *  which calculates the the individual wheel motions necessary to produce a specified robot motion.
  *  This calculation is the central function of a basic drive control program to convert user input to motor control.</p></dd>
- *  <dt>{@link #forward(EnumMap)}}</dt>
+ *  <dt>{@link #forward(EnumMap)}</dt>
  *  <dd><p style="margin-left: 40px">Implements the forward kinematic equation <b>[V] = [F][&Omega;](r)</b>,
  *  which calculates the robot motion to be expected from a set of individual wheel motions.
  *  This calculation is not generally necessary for basic robot control, but may be useful for more advanced operations.
@@ -114,7 +115,7 @@ import static org.usfirst.frc.team2077.common.VelocityDirection.*;
  *  where most combinations of wheel motions are inconsistent. Inconsistent wheel motions in practice mean
  *  wheel slippage, motor stalling, and generally erratic behavior, the more inconsistent the worse.
  *  This forward calculation produces a least-squares best fit.</p></dd>
- *  <dt>{@linkplain Point#inverseMatrixForBotSize(double, double)}</dt>
+ *  <dt>{@linkplain #inverseMatrix(Point)}</dt>
  *  <dd><p style="margin-left: 40px">Convenience methods for initializing the inverse kinematic matrix <b>[R]</b>.</p></dd>
  *  <dt>{@link #createForwardMatrix(EnumMatrix)}</dt>
  *  <dd><p style="margin-left: 40px">Convenience method for initializing the forward kinematic matrix <b>[F]</b>.</p></dd>
@@ -255,7 +256,7 @@ public final class MecanumMath {
 	public MecanumMath(double length, double width, double wheelRadius, double wheelSpeedFactor, double robotSpeedFactor, double rotationSpeedFactor, Point rotationCenter) {
 		length_ = length;
 		width_ = width;
-		reverseMatrix_ = rotationCenter.inverseMatrixForBotSize(length, width);
+		reverseMatrix_ = inverseMatrix(rotationCenter);
 		//forwardMatrix_ = createForwardMatrix(length, width);
 		forwardMatrix_ = createForwardMatrix(reverseMatrix_);
 		wheelRadius_ = wheelRadius;
@@ -276,6 +277,58 @@ public final class MecanumMath {
 		return inverse(translationMatrix, new Point(0, 0));
 	}
 
+	private EnumMatrix<VelocityDirection, WheelPosition> inverseMatrix(Point around) {
+		EnumMatrix<WheelPosition, VelocityDirection> wheelCoords = new EnumMatrix<>(
+				WheelPosition.class,
+				VelocityDirection.class
+		);
+		wheelCoords.set(FRONT_RIGHT, FORWARD, length_ / 2 - around.north);
+		wheelCoords.set(FRONT_RIGHT, STRAFE, width_ / 2 - around.east);
+		wheelCoords.set(FRONT_LEFT, FORWARD, length_ / 2 - around.north);
+		wheelCoords.set(FRONT_LEFT, STRAFE, -width_ / 2 - around.east);
+
+		wheelCoords.set(BACK_RIGHT, FORWARD, -length_ / 2 - around.north);
+		wheelCoords.set(BACK_RIGHT, STRAFE, width_ / 2 - around.east);
+		wheelCoords.set(BACK_LEFT, FORWARD, -length_ / 2 - around.north);
+		wheelCoords.set(BACK_LEFT, STRAFE, -width_ / 2 - around.east);
+
+		EnumMatrix<VelocityDirection, WheelPosition> inverseMatrix = new EnumMatrix<>(
+				VelocityDirection.class,
+				WheelPosition.class
+		);
+		inverseMatrix.set(FORWARD, FRONT_RIGHT, 1d);
+		inverseMatrix.set(STRAFE, FRONT_RIGHT, -1d);
+		inverseMatrix.set(
+				ROTATION,
+				FRONT_RIGHT,
+				-wheelCoords.get(FRONT_RIGHT, FORWARD) - wheelCoords.get(FRONT_RIGHT, STRAFE)
+		);
+		inverseMatrix.set(FORWARD, FRONT_LEFT, 1d);
+		inverseMatrix.set(STRAFE, FRONT_LEFT, 1d);
+		inverseMatrix.set(
+				ROTATION,
+				FRONT_LEFT,
+				wheelCoords.get(FRONT_LEFT, FORWARD) - wheelCoords.get(FRONT_LEFT, STRAFE)
+		);
+
+		inverseMatrix.set(FORWARD, BACK_RIGHT, 1d);
+		inverseMatrix.set(STRAFE, BACK_RIGHT, 1d);
+		inverseMatrix.set(
+				ROTATION,
+				BACK_RIGHT,
+				wheelCoords.get(BACK_RIGHT, FORWARD) - wheelCoords.get(BACK_RIGHT, STRAFE)
+		);
+		inverseMatrix.set(FORWARD, BACK_LEFT, 1d);
+		inverseMatrix.set(STRAFE, BACK_LEFT, -1d);
+		inverseMatrix.set(
+				ROTATION,
+				BACK_LEFT,
+				-wheelCoords.get(BACK_LEFT, FORWARD) - wheelCoords.get(BACK_LEFT, STRAFE)
+		);
+
+		return inverseMatrix;
+	}
+
 	/***
 	 * Solve the inverse kinematic equation <b>[&Omega;] = (1/r)[R][V]</b> for rotation about an arbitrary point.
 	 * <b>[R]</b> matrix and wheel radius initialized in the constructor, and converting input and output
@@ -288,7 +341,7 @@ public final class MecanumMath {
 		EnumMatrix<VelocityDirection, WheelPosition> inverseKineticMatrix =
 			rotationCenter.north == 0 && rotationCenter.east == 0 ?
 				reverseMatrix_ :
-				rotationCenter.inverseMatrixForBotSize(length_, width_);
+				inverseMatrix(rotationCenter);
 
 		EnumMap<WheelPosition, Double> wheelSpeedVector = new EnumMap<>(WheelPosition.class);
 		for(WheelPosition position : WheelPosition.values()) {

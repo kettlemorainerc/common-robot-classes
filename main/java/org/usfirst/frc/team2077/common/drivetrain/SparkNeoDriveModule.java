@@ -8,7 +8,7 @@ public class SparkNeoDriveModule extends CANSparkMax implements DriveModuleIF {
     private static final boolean USE_SOFTWARE_PID = true;
 
     //6 inch wheels on rnd bot
-    private final SparkMaxPIDController pidController;
+    private final SparkPIDController pidController;
     private final RelativeEncoder encoder;
     private double setPoint;
     public final double circumference;
@@ -52,10 +52,7 @@ public class SparkNeoDriveModule extends CANSparkMax implements DriveModuleIF {
         setRPM(setPoint > maxRPM ? maxRPM : setPoint);
     }
 
-    @Override
-    public WheelPosition getWheelPosition() {
-        return position.position();
-    }
+    @Override public WheelPosition getWheelPosition() {return position.getWheelPosition();}
 
     public void setRPM(double rpm) {
         setPoint = Math.min(rpm, maxRPM);
