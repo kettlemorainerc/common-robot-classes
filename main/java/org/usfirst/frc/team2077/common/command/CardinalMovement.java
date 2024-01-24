@@ -5,48 +5,34 @@
 
 package org.usfirst.frc.team2077.common.command;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.*;
+import org.usfirst.frc.team2077.common.*;
+import org.usfirst.frc.team2077.common.control.DriveXboxController;
 import org.usfirst.frc.team2077.common.drivetrain.*;
-import org.usfirst.frc.team2077.common.control.DriveStick;
-import org.usfirst.frc.team2077.common.HardwareRequirements;
 
-import java.util.Set;
+public class CardinalMovement extends CommandBase {
+    protected DriveXboxController stick;
+    protected DriveChassisIF chassis;
 
-public class CardinalMovement implements Command {
-	public static final double ACCELERATION_G_LIMIT = .4;
-	public static final double DECELERATION_G_LIMIT = ACCELERATION_G_LIMIT; //1e10 //.35 is the value used for the 03-05-21 version
+    public CardinalMovement(HardwareRequirements requirements, DriveXboxController stick) {
+        addRequirements(requirements.getPosition());
 
-	protected final Set<Subsystem> requirements;
+        this.stick = stick;
+        this.chassis = requirements.getChassis();
+    }
 
-	protected DriveStick stick;
-	protected DriveChassisIF chassis;
+    @Override public void execute() {
+        double north = -stick.getNorth();
+        double east = stick.getEast();
 
-	public CardinalMovement(HardwareRequirements hardware, DriveStick stick) {
-		requirements = Set.of(hardware.getPosition());
+        if(DriverStation.isTeleop()) chassis.setVelocityPercent(north, east);
+    }
 
-		this.stick = stick;
-		this.chassis = hardware.getChassis();
-		this.chassis.setGLimits(ACCELERATION_G_LIMIT, DECELERATION_G_LIMIT);
-	}
+    @Override public void end(boolean interrupted) {
+    }
 
-	@Override public void execute() {
-		double north = -stick.getNorth();
-		double east = stick.getEast();
-
-		// Tank drive
-//		north = Math.abs(north) >= Math.abs(east) ? north : 0;
-//		east = Math.abs(east) > Math.abs(north) ? east : 0;
-
-		chassis.setVelocityPercent(north, east);
-	}
-
-	@Override public void end(boolean interrupted) {}
-
-	@Override public boolean isFinished() {
-		return false;
-	}
-
-	@Override public Set<Subsystem> getRequirements() {
-		return requirements;
-	}
+    @Override public boolean isFinished() {
+        return false;
+    }
 }
