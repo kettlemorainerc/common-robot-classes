@@ -240,25 +240,7 @@ public class SwerveMath {
         }
     }
 
-    private record JointKey(RobotSide north, RobotSide east) {
-        @Override public boolean equals(Object o) {
-            if(this == o) return true;
-            if(o == null || getClass() != o.getClass()) return false;
-            JointKey jointKey = (JointKey) o;
-            return east == jointKey.east && north == jointKey.north;
-        }
+    private record JointKey(RobotSide north, RobotSide east) {}
 
-        @Override public String toString() {
-            return "JointKey{" + "east=" + east + ", north=" + north + '}';
-        }
-    }
-
-    private static class Multiplier {
-        int x, y;
-
-        Multiplier(int x, int y) {
-            this.x = x;
-            this.y = y;
-        }
-    }
+    private record Multiplier(int x, int y) {}
 }

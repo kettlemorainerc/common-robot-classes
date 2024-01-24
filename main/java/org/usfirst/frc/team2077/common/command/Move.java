@@ -14,9 +14,12 @@ import org.usfirst.frc.team2077.common.HardwareRequirements;
 
 import java.util.*;
 
-public class Move extends Command {
+public class Move implements Command {
 	public static final double ACCELERATION_G_LIMIT = .1;
 	public static final double DECELERATION_G_LIMIT = .3;
+
+	protected final Set<Subsystem> requirements;
+
 	private final AbstractChassis chassis;
 	private final double[] distanceTotal; // {north, east, rotation} (signed)
 	private final int method; // 1 2 or 3 (#args to setVelocity/setRotation)
@@ -43,7 +46,7 @@ public class Move extends Command {
 	}
 
 	private Move(HardwareRequirements<?, ?> hardware, double north, double east, double rotation, int method, Subsystem... requirements) {
-		addRequirements(requirements);
+		this.requirements = Set.of(requirements);
 		this.chassis = hardware.getChassis();
 
 //		distanceTotal_ = new double[]{north, east * .68, rotation * 7 / 8}; //fudged values for the multipliers
@@ -51,10 +54,11 @@ public class Move extends Command {
 		this.method = method;
 	}
 
+	@Override public Set<Subsystem> getRequirements() {
+		return requirements;
+	}
 
-	@Override
-	public void initialize() {
-
+	@Override public void initialize() {
 		EnumMap<VelocityDirection, Double> max = chassis.getMaximumVelocity();
 		EnumMap<VelocityDirection, Double> min = chassis.getMinimumVelocity();
 
@@ -68,7 +72,6 @@ public class Move extends Command {
 
 		double[] sign = new double[3];
 		for(int i = 0; i < 3; i++){
-
 			VelocityDirection axis = VelocityDirection.values()[i];
 
 			scale[i] /= maxScale; // 0 - 1
@@ -90,12 +93,9 @@ public class Move extends Command {
 		acceleration = new AccelerationLimits(ACCELERATION_G_LIMIT, DECELERATION_G_LIMIT, chassis, scale);
 
 		origin = new Position(chassis.getPosition());
-
 	}
 
-	@Override
-	public void execute() {
-
+	@Override public void execute() {
 		EnumMap<VelocityDirection, Double> currentVelocity = chassis.getVelocityCalculated();
 
 		EnumMap<VelocityDirection, Double> distanceTraveled = (new Position(chassis.getPosition())).distanceRelative(
