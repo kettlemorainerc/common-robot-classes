@@ -38,4 +38,6 @@ public interface DriveModuleIF {
      * @return Velocity In inches/second.
      */
     double getVelocityMeasured();
+
+    double getVelocitySet();
 }
