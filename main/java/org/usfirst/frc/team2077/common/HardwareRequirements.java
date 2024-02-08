@@ -5,7 +5,11 @@ import edu.wpi.first.wpilibj2.command.*;
 import org.usfirst.frc.team2077.common.drivetrain.*;
 import org.usfirst.frc.team2077.common.sensor.*;
 
-public abstract class HardwareRequirements<DriveModule, Chassis extends AbstractChassis<? super DriveModule>> {
+public abstract class HardwareRequirements<
+      ChassisType extends AbstractChassis,
+      WheelType extends DriveModuleIF,
+      WheelIdentifier extends Enum<WheelIdentifier>
+> implements ChassisProvider<ChassisType>, WheelProvider<WheelType, WheelIdentifier> {
     private final Subsystem heading;
     private final Subsystem position;
     private final AngleSensor angleSensor;
@@ -33,7 +37,4 @@ public abstract class HardwareRequirements<DriveModule, Chassis extends Abstract
     public AHRS getNavX() {
         return navX;
     }
-
-    public abstract Chassis getChassis();
-    public abstract DriveModule getWheel(WheelPosition position);
 }

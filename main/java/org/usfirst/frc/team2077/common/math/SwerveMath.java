@@ -8,7 +8,7 @@ import java.util.*;
 
 import static java.lang.Math.*;
 import static org.usfirst.frc.team2077.common.VelocityDirection.*;
-import static org.usfirst.frc.team2077.common.WheelPosition.*;
+import static org.usfirst.frc.team2077.common.RectangularWheelPosition.*;
 
 /**
  * Handle calculating the necessary magnitude and angle for a set of swerve wheels.
@@ -38,8 +38,10 @@ import static org.usfirst.frc.team2077.common.WheelPosition.*;
  * </dl>
  */
 public class SwerveMath {
-    private static final EnumMap<WheelPosition, Multiplier> WHEEL_MULTIPLIERS = new EnumMap<>(WheelPosition.class);
-    private static final EnumMap<WheelPosition, JointKey> WHEEL_TO_SIDES = new EnumMap<>(WheelPosition.class);
+    private static final EnumMap<RectangularWheelPosition, Multiplier> WHEEL_MULTIPLIERS = new EnumMap<>(
+          RectangularWheelPosition.class);
+    private static final EnumMap<RectangularWheelPosition, JointKey> WHEEL_TO_SIDES = new EnumMap<>(
+          RectangularWheelPosition.class);
     static {
         WHEEL_TO_SIDES.put(FRONT_LEFT, new JointKey(RobotSide.FRONT, RobotSide.LEFT));
         WHEEL_TO_SIDES.put(BACK_LEFT, new JointKey(RobotSide.BACK, RobotSide.LEFT));
@@ -115,7 +117,7 @@ public class SwerveMath {
         return new SwerveTargetValues(mag, ang);
     }
 
-    public Map<WheelPosition, SwerveTargetValues> swerveTargetsForBotVelocity(
+    public Map<RectangularWheelPosition, SwerveTargetValues> swerveTargetsForBotVelocity(
             Map<VelocityDirection, Double> targetMagnitudes
     ) {
         double north = targetMagnitudes.get(FORWARD);
@@ -134,7 +136,8 @@ public class SwerveMath {
         // Some mix of north/strafe/rotation
         Map<RobotSide, Double> valueMap = createRobotSideValueMap(north, strafe, rotation);
 
-        Map<WheelPosition, SwerveTargetValues> targetValues = new EnumMap<>(WheelPosition.class);
+        Map<RectangularWheelPosition, SwerveTargetValues> targetValues = new EnumMap<>(
+              RectangularWheelPosition.class);
 
         WHEEL_TO_SIDES.forEach((position, sides) -> targetValues.put(position, wheelTargets(valueMap, sides.east, sides.north)));
 
@@ -144,7 +147,7 @@ public class SwerveMath {
         return targetValues;
     }
 
-    public Map<WheelPosition, SwerveTargetValues> swerveTargetsForBotVelocity(
+    public Map<RectangularWheelPosition, SwerveTargetValues> swerveTargetsForBotVelocity(
           Map<VelocityDirection, Double> targetMagnitudes,
           double maxSpeed, double maxRotation
     ) {
@@ -172,7 +175,7 @@ public class SwerveMath {
      * @param sin sin(&delta;<sub>i</sub>)
      * @return W<sub>i</sub>
      */
-    private double getWFor(WheelPosition p, double cos, double sin) {
+    private double getWFor(RectangularWheelPosition p, double cos, double sin) {
         var mults = WHEEL_MULTIPLIERS.get(p);
 
         return (
@@ -181,7 +184,7 @@ public class SwerveMath {
     }
 
     public Map<VelocityDirection, Double> botVelocityForSwerveStates(
-        Map<WheelPosition, ? extends SwerveModule> targets
+        Map<RectangularWheelPosition, ? extends SwerveModule> targets
     ) {
         SwerveModule fl = targets.get(FRONT_LEFT);
         SwerveModule bl = targets.get(BACK_LEFT);

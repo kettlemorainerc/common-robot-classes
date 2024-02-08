@@ -9,6 +9,7 @@ import org.usfirst.frc.team2077.common.VelocityDirection;
 
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.stream.*;
 
 import static org.usfirst.frc.team2077.common.VelocityDirection.*;
 
@@ -29,85 +30,37 @@ public class Position extends EnumMap<VelocityDirection, Double> {
         put(ROTATION, position[ROTATION.ordinal()]);
     }
 
-    public void moveAbsolute(double north, double east, double rotation) {
-        compute(FORWARD, (k, val) -> val + north);
-        compute(STRAFE, (k, v) -> v + east);
+    public void move(double forward, double strafe, double rotation) {
+        compute(FORWARD,  (k, v) -> v + forward);
+        compute(STRAFE,   (k, v) -> v + strafe);
         compute(ROTATION, (k, v) -> v + rotation);
     }
 
-    public void moveRelative(double north, double east, double rotation) {
-        double distance = Math.sqrt(north*north + east*east); // along curve
-        double directionStraight = Math.atan2(east, north);
-        double directionCurve = 0;
-        if ( distance != 0 && rotation != 0) {
-            double radians = Math.toRadians(rotation);
-            double radius = distance / radians;
-            double ahead = radius * Math.sin(radians);
-            double side = radius - radius * Math.cos(radians);
-            directionCurve = Math.atan2(side, ahead);
-            distance = Math.sqrt(side*side + ahead*ahead);
-        }
-        double direction = Math.toRadians(get(ROTATION)) + directionStraight + directionCurve;
-        moveAbsolute(distance * Math.cos(direction), distance * Math.sin(direction), rotation);
+    public void move(double delta, VelocityDirection axis){
+        compute(axis, (k, v) -> v + delta);
     }
 
-    public void moveRelative(Map<VelocityDirection, Double> velocities, double changeInTime) {
-        moveRelative(
-                velocities.get(FORWARD) * changeInTime,
-                velocities.get(STRAFE) * changeInTime,
-                velocities.get(ROTATION) * changeInTime
-        );
-    }
+    public Map<VelocityDirection, Double> distanceTo(Position origin) {
+        Map<VelocityDirection, Double> distanceTo = this.clone();
 
-    public EnumMap<VelocityDirection, Double> distanceAbsolute(Position origin) {
-        EnumMap<VelocityDirection, Double> distanceTo = this.clone();
-
-        distanceTo.compute(FORWARD, (k, v) -> v - origin.getOrDefault(FORWARD, 0d));
-        distanceTo.compute(STRAFE, (k, v) -> v - origin.getOrDefault(STRAFE, 0d));
-        distanceTo.compute(ROTATION, (k, v) -> v - origin.getOrDefault(ROTATION, 0d));
-        
-        return distanceTo;
-    }
-
-
-    public EnumMap<VelocityDirection, Double> distanceRelative(Position origin) {
-        EnumMap<VelocityDirection, Double> absolute = distanceAbsolute(origin);
-        double rotation = absolute.get(ROTATION);
-        double distance = Math.sqrt(absolute.get(FORWARD)*absolute.get(FORWARD) + absolute.get(STRAFE)*absolute.get(STRAFE)); // straight line
-        double direction = Math.atan2(absolute.get(STRAFE), absolute.get(FORWARD)) - Math.toRadians(origin.get(ROTATION));
-        double directionCurve = 0;
-        if ( distance != 0 && rotation != 0) {
-            double radians = Math.toRadians(rotation);
-            double radius = distance/2/Math.sin(radians/2);
-            double ahead = radius * Math.sin(radians);
-            double side = radius - radius * Math.cos(radians);
-            directionCurve = Math.atan2(side, ahead);
-            distance = radius * radians;
-        }
-        double directionStraight = direction - directionCurve;
-
-        EnumMap<VelocityDirection, Double> distanceTo = new EnumMap<>(VelocityDirection.class);
-
-        distanceTo.put(FORWARD, distance * Math.cos(directionStraight));
-        distanceTo.put(STRAFE, distance * Math.cos(directionStraight));
-        distanceTo.put(ROTATION, rotation);
+        distanceTo.compute(FORWARD,  (k, v) -> v - origin.getOrDefault(FORWARD, 0d));
+        distanceTo.compute(STRAFE,   (k, v) -> v - origin.getOrDefault(STRAFE,  0d));
+        distanceTo.compute(ROTATION, (k, v) -> v - origin.getOrDefault(ROTATION,0d));
 
         return distanceTo;
     }
 
-    public void set(double north, double east, double heading) {
-        put(FORWARD, north);
-        put(STRAFE, east);
-        setHeading(heading);
-    }
-
-    public void setHeading(double heading) {
-        put(ROTATION, heading);
+    public void set(double forward, double strafe, double rotation) {
+        put(FORWARD,    forward);
+        put(STRAFE,     strafe);
+        put(ROTATION,   rotation);
     }
 
     public double[] get() {
-        return new double[] {get(FORWARD), get(STRAFE), get(ROTATION)};
+        return new double[]{get(FORWARD), get(STRAFE), get(ROTATION)};
     }
+
+    public double get(VelocityDirection axis){return get(axis);}
 
     public Position copy() {
         return new Position(this);
@@ -115,15 +68,10 @@ public class Position extends EnumMap<VelocityDirection, Double> {
 
     @Override
     public String toString() {
-        return "N:" + Math.round(get(FORWARD)*10.)/10. + "in E:" + Math.round(get(STRAFE)*10.)/10. + "in A:" + Math.round(get(ROTATION) * 10.) / 10. + "deg";
-    }
+        return Stream.of(VelocityDirection.values()).map(
+              k -> String.format("%s: %.2f", k, this.get(k))
+        ).collect(Collectors.joining()); //TODO: test and make sure this works
 
-    private static String toString(double[] doubleArray) {
-        StringBuffer sb = new StringBuffer();
-        for (Double d : doubleArray) {
-            sb.append(Math.round(d * 10.) / 10.);
-            sb.append(" ");
-        }
-        return sb.toString();
+        //        return "N:" + Math.round(get(FORWARD) * 10.) / 10. + "in E:" + Math.round(get(STRAFE) * 10.) / 10. + "in A:" + Math.round(get(ROTATION) * 10.) / 10. + "deg";
     }
 }

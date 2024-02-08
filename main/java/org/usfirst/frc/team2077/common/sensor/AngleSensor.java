@@ -40,8 +40,7 @@ public class AngleSensor {
 						}
 						navX.setAngleAdjustment(navX.getAngleAdjustment() - (angle - stopAngle));
 						angle = stopAngle;
-						AngleSensor.this.rotating = false;
-					}
+                    }
 					AngleSensor.this.rotating = rotating;
 					angleREF.set(angle);
 				}

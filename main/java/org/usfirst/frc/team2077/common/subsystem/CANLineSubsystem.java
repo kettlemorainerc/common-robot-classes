@@ -38,18 +38,4 @@ public abstract class CANLineSubsystem<T> implements Subsystem {
             motor.set(ControlMode.PercentOutput, percent);
         }
     }
-
-    public static final class SparkNeo extends CANLineSubsystem<SparkNeoDriveModule> {
-        public SparkNeo(DrivePosition position) {
-            super(new SparkNeoDriveModule(position), position.motorId());
-        }
-
-        @Override public void setRPM(double RPM) {
-            motor.setRPM(RPM);
-        }
-
-        @Override public void setPercent(double percent) {
-            motor.setRPM(motor.maxRPM * percent);
-        }
-    }
 }

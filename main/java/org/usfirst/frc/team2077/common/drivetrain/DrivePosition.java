@@ -1,6 +1,6 @@
 package org.usfirst.frc.team2077.common.drivetrain;
 
-import org.usfirst.frc.team2077.common.WheelPosition;
+import org.usfirst.frc.team2077.common.RectangularWheelPosition;
 
 public interface DrivePosition {
     double gearRatio();
@@ -14,5 +14,5 @@ public interface DrivePosition {
     double I();
     double D();
 
-    WheelPosition getWheelPosition();
+    RectangularWheelPosition getWheelPosition();
 }

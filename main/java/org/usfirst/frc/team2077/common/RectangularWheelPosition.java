@@ -1,6 +1,6 @@
 package org.usfirst.frc.team2077.common;
 
-public enum WheelPosition {
+public enum RectangularWheelPosition {
     FRONT_RIGHT,
     BACK_RIGHT,
     BACK_LEFT,

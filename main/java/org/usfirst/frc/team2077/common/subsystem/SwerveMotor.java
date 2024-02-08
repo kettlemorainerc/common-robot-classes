@@ -3,7 +3,7 @@ package org.usfirst.frc.team2077.common.subsystem;
 import com.revrobotics.*;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import org.usfirst.frc.team2077.common.WheelPosition;
+import org.usfirst.frc.team2077.common.RectangularWheelPosition;
 import org.usfirst.frc.team2077.common.drivetrain.DriveModuleIF;
 
 public class SwerveMotor implements Subsystem, SwerveModule, DriveModuleIF {
@@ -158,7 +158,7 @@ public class SwerveMotor implements Subsystem, SwerveModule, DriveModuleIF {
         targetVelocity = MAX_DRIVE_PERCENT * velocity * DRIVE_GEAR_RATIO * 60 / WHEEL_CIRCUMFERENCE;
     }
 
-    @Override public WheelPosition getWheelPosition() {
+    @Override public RectangularWheelPosition getWheelPosition() {
         return position.wheelPosition();
     }
 
@@ -171,12 +171,6 @@ public class SwerveMotor implements Subsystem, SwerveModule, DriveModuleIF {
 
         return rawDistance;
     }
-
-    @Override public double getDistance() {
-        return 0;
-    }
-
-    @Override public void resetDistance() {}
 
     // public boolean isAtTarget(){
     //     return Math.abs(getAngleDifference(getWheelAngle(), targetAngle)) < DEAD_ANGLE;

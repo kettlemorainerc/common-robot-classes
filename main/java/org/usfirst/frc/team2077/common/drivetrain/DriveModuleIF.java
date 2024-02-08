@@ -5,7 +5,7 @@
 
 package org.usfirst.frc.team2077.common.drivetrain;
 
-import org.usfirst.frc.team2077.common.WheelPosition;
+import org.usfirst.frc.team2077.common.RectangularWheelPosition;
 
 /**
  * Wrapper for a single wheel/motor/controller/encoder assembly. The wrapper
@@ -28,7 +28,7 @@ public interface DriveModuleIF {
      */
     void setVelocity(double velocity);
 
-    WheelPosition getWheelPosition();
+    RectangularWheelPosition getWheelPosition();
 
     /**
      * Current velocity for this wheel.
@@ -38,17 +38,4 @@ public interface DriveModuleIF {
      * @return Velocity In inches/second.
      */
     double getVelocity();
-
-    /**
-     * Distance traveled by the wheel since startup or the last reset.
-     * This should be a direct measurement from an encoder if available,
-     * otherwise computed by integrating velocity over time.
-     * @return Distance in inches.
-     */
-    double getDistance();
-
-    /**
-     * Reset the distance measurement to zero inches.
-     */
-    void resetDistance();
 }
