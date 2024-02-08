@@ -162,7 +162,7 @@ public class SwerveMotor implements Subsystem, SwerveModule, DriveModuleIF {
         return position.wheelPosition();
     }
 
-    @Override public double getVelocity() {
+    @Override public double getVelocityMeasured() {
         double rawRPM = magnitudeMotor.getEncoder().getVelocity();
 
         double rawWheelRPM = rawRPM / DRIVE_GEAR_RATIO;
@@ -192,6 +192,6 @@ public class SwerveMotor implements Subsystem, SwerveModule, DriveModuleIF {
     // }
 
     @Override public String toString() {
-        return Double.toString(getVelocity());
+        return Double.toString(getVelocityMeasured());
     }
 }

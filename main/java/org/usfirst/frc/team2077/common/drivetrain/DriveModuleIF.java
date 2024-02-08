@@ -37,5 +37,5 @@ public interface DriveModuleIF {
      * the motor controller.
      * @return Velocity In inches/second.
      */
-    double getVelocity();
+    double getVelocityMeasured();
 }
